@@ -2,22 +2,36 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import Connection from './database/db.js'; 
+import Connection from './database/db.js';
+
+// Import the admin routers
+import { adminSignupRouter, adminLoginRouter } from './user/admin/adminLoginSignup.js';
+import {investigatorSignupRouter, investigatorLoginRouter} from './user/investigator/investigatorLoginSignup.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT; // Fallback to port 5000 if PORT is not defined
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Use the admin routers
+app.use(adminSignupRouter);
+app.use(adminLoginRouter);
+
+// Use the investigator routers
+app.use(investigatorSignupRouter);
+app.use(investigatorLoginRouter);
+
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
 
+// Initialize the database connection
 Connection();
+
 
 
 ///////////////////////////////////////////////////IMPORTANT////////////////////////////////////////////////////////////////////

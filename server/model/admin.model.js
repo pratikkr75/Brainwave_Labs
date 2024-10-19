@@ -1,5 +1,5 @@
-var z = require('zod');
-const mongoose = require('mongoose');
+import { z } from 'zod';
+import mongoose from 'mongoose';
 
 const adminSchema = z.object({
   firstname: z.string(),
@@ -37,5 +37,4 @@ const mongooseAdminSchema = new mongoose.Schema({
 
 const AdminModel = mongoose.model('User', mongooseAdminSchema);
 
-module.exports = AdminModel;
-module.exports = adminSchema;
+export {AdminModel, adminSchema}

@@ -2,8 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import AdminModel from './model/admin.model.js';
-import adminSchema from './model/admin.model.js';
+import {AdminModel, adminSchema} from '../../model/admin.model.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
