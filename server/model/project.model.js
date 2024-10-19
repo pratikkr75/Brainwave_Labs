@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const mongoose = require('mongoose');
+=======
+import mongoose from 'mongoose';
+>>>>>>> second-branch
 import { z } from 'zod';
 
 const projectSchema = z.object({
@@ -105,5 +109,10 @@ const mongooseProjectSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const ProjectModel = mongoose.model('Project', mongooseProjectSchema);
+<<<<<<< HEAD
 module.exports = ProjectModel;
 modeule.exports = projectSchema;
+=======
+
+export {ProjectModel, projectSchema}
+>>>>>>> second-branch
