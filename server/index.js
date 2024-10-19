@@ -2,31 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-<<<<<<< HEAD
+
 import Connection from './database/db.js'; 
-=======
+
 import Connection from './database/db.js';
 
 // Import the admin routers
 import { adminSignupRouter, adminLoginRouter } from './user/admin/adminLoginSignup.js';
 import {investigatorSignupRouter, investigatorLoginRouter} from './user/investigator/investigatorLoginSignup.js';
->>>>>>> second-branch
+
 
 dotenv.config();
 
 const app = express();
-<<<<<<< HEAD
-const PORT = process.env.PORT; // Fallback to port 5000 if PORT is not defined
-=======
 const PORT = process.env.PORT;
->>>>>>> second-branch
 
 app.use(cors());
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-=======
+
 // Use the admin routers
 app.use(adminSignupRouter);
 app.use(adminLoginRouter);
@@ -35,22 +30,13 @@ app.use(adminLoginRouter);
 app.use(investigatorSignupRouter);
 app.use(investigatorLoginRouter);
 
->>>>>>> second-branch
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
 
-<<<<<<< HEAD
 Connection();
 
 
-=======
-// Initialize the database connection
-Connection();
-
-
-
->>>>>>> second-branch
 ///////////////////////////////////////////////////IMPORTANT////////////////////////////////////////////////////////////////////
 
 //example of protected route------------------------------------------------------------

@@ -2,12 +2,8 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-<<<<<<< HEAD
 import AdminModel from './model/admin.model.js';
 import adminSchema from './model/admin.model.js';
-=======
-import {AdminModel, adminSchema} from '../../model/admin.model.js';
->>>>>>> second-branch
 import dotenv from 'dotenv';
 
 dotenv.config();

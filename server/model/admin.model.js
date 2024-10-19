@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 var z = require('zod');
 const mongoose = require('mongoose');
-=======
-import { z } from 'zod';
-import mongoose from 'mongoose';
->>>>>>> second-branch
 
 const adminSchema = z.object({
   firstname: z.string(),
@@ -42,9 +37,4 @@ const mongooseAdminSchema = new mongoose.Schema({
 
 const AdminModel = mongoose.model('User', mongooseAdminSchema);
 
-<<<<<<< HEAD
-module.exports = AdminModel;
-module.exports = adminSchema;
-=======
-export {AdminModel, adminSchema}
->>>>>>> second-branch
+export {AdminModel,adminSchema};
