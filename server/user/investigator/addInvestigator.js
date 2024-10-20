@@ -1,29 +1,28 @@
+import { InvestigatorModel } from '../../model/investigator.model.js';
 import {ProjectModel} from '../../model/project.model.js';
-
 
 import express from 'express';
 
-
 const addInvestigator = express.Router();
 
-addInvestigator.post('/api/admin/addInvestigator/:projectCode',async(req,res)=>{
+addInvestigator.post('/api/admin/addInvestigator',async(req,res)=>{
    
     try {
-        const projectCode = req.params.projectCode;
-        const investigator = req.body;
-        console.log(investigator);
-        console.log(projectCode);
-        const project = await ProjectModel.findOne({projectCode});
-        console.log(project);
+        const { projectCode, firstname, lastname, email } = req.body;
+        const query = { projectCode: projectCode };
+        const project = await ProjectModel.findOne(query);
+        const emailexist = await InvestigatorModel.findOne({email:email});
+        
         if (!project) {
           return res.status(404).json({ message: 'Project not found' });
         }
-    
+        if(!emailexist){
+            return res.status(400).json({message : 'Investigator not found'})
+        }
         project.projectInvestigators.push({
-          name: investigator.firstname,
-          email: investigator.email,
+          name: `${firstname} ${lastname}`, 
+          email: email,
         });
-    
         await project.save();
     
         res.status(201).json({ message: 'Investigator added successfully', project });

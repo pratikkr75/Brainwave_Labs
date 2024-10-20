@@ -34,8 +34,8 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
     // 2. Checking for existing user
     const existingInvestigator = await InvestigatorModel.findOne({ email: validatedData.email });
     if (existingInvestigator) {
-      // 3. Redirect to the login route if the email already exists
-      return res.redirect('/api/investigator/login');
+ 
+      return res.status(400).json({message:"Account alreday exists! Please Login"});
     }
 
     // 4. Hashing password
@@ -54,15 +54,19 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
       message: "Investigator created successfully",
       redirect: '/api/investigator/login'  // Include redirect URL in response
     });
-  } catch (error) {
-    // 6. Handling errors
+  }catch(error){
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
-    }
-
-    // 7. Handle other errors
-    return res.status(500).json({ message: "An error occurred", error: error.message });
+      // If the error is a Zod validation error, respond with a 400 status and the error details
+      const validationErrors = error.errors.map((err) => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+      res.status(400).json({ message: 'Validation failed', errors: validationErrors});
+    } else {
+      // If the error is not a Zod error, respond with a 400 status and the error details
+      res.status(400).json({ message: 'Error creating user', error });
   }
+}
 });
 
 // Investigator Login Route

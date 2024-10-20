@@ -11,6 +11,8 @@ import {investigatorSignupRouter, investigatorLoginRouter} from './user/investig
 import {createProjectRouter} from './project/createProject.js';
 import {findInvestigator} from './user/investigator/findinvestigator.js'
 import { addInvestigator } from './user/investigator/addInvestigator.js';
+import {getAllProjectAdmin} from './project/getAllProjectAdmin.js';
+import { getAllProjectInvestigator } from './project/getAllProjectInvestigator.js';
 dotenv.config();
 
 const app = express();
@@ -32,10 +34,18 @@ app.use(investigatorLoginRouter);
 //createProject router
 app.use(createProjectRouter);
 
-//find list of Investigator based on email
+//find list of Investigator based on email (only those that do not belong to a particular project)
 app.use(findInvestigator);
+
 // add Investigator to project
 app.use(addInvestigator);
+
+//get all projects for a admin
+app.use(getAllProjectAdmin);
+
+//get all projects for a investigator
+app.use(getAllProjectInvestigator);
+
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
