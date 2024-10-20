@@ -5,13 +5,12 @@ import dotenv from 'dotenv';
 
 import Connection from './database/db.js'; 
 
-import Connection from './database/db.js';
-
 // Import the admin routers
 import { adminSignupRouter, adminLoginRouter } from './user/admin/adminLoginSignup.js';
 import {investigatorSignupRouter, investigatorLoginRouter} from './user/investigator/investigatorLoginSignup.js';
-
-
+import {createProjectRouter} from './project/createProject.js';
+import {findInvestigator} from './user/investigator/findinvestigator.js'
+import { addInvestigator } from './user/investigator/addInvestigator.js';
 dotenv.config();
 
 const app = express();
@@ -30,6 +29,13 @@ app.use(adminLoginRouter);
 app.use(investigatorSignupRouter);
 app.use(investigatorLoginRouter);
 
+//createProject router
+app.use(createProjectRouter);
+
+//find list of Investigator based on email
+app.use(findInvestigator);
+// add Investigator to project
+app.use(addInvestigator);
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });

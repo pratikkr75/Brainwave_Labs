@@ -1,5 +1,5 @@
-var z = require('zod');
-const mongoose = require('mongoose');
+import {z }from 'zod';
+import mongoose from 'mongoose';
 
 const investigatorSchema = z.object({
   firstname: z.string(),
@@ -35,6 +35,6 @@ const mongooseInvestigatorSchema = new mongoose.Schema({
   }
 });
 
-const InvestigatorModel = mongoose.model('User', mongooseInvestigatorSchema);
+const InvestigatorModel = mongoose.model('Investigator', mongooseInvestigatorSchema);
 
 export {InvestigatorModel,investigatorSchema};

@@ -3,8 +3,7 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import InvestigatorModel from './model/investigator.model.js'; 
-import investigatorSchema from './model/investigator.model.js'; 
+import {InvestigatorModel, investigatorSchema} from '../../model/investigator.model.js'; 
 
 dotenv.config(); 
 

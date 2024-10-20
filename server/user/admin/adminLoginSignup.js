@@ -2,8 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import AdminModel from './model/admin.model.js';
-import adminSchema from './model/admin.model.js';
+import {AdminModel, adminSchema} from '../../model/admin.model.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -62,7 +61,7 @@ adminSignupRouter.post('/api/admin/signup', async (req, res) => {
 adminLoginRouter.post('/api/admin/login', async (req, res) => {
   try {
     const validatedData = adminLoginSchema.parse(req.body);
-
+    
     const admin = await AdminModel.findOne({ email: validatedData.email });
     if (!admin) {
       return res.status(401).json({ message: "Invalid email or password" });
