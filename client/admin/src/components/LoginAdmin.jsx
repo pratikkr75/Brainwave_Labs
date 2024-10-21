@@ -11,13 +11,12 @@ export default function LoginInvestigator (){
             email:email,
             password:password
         };
-        const res = await axios.post('http://localhost:3000/api/investigator/login', formData);
+        const res = await axios.post('http://localhost:3000/api/admin/login', formData);
         const token = res.data.token;
         localStorage.setItem('token',token);
         alert(res.data.message);
     }catch(err){
-        alert(err.response.data.message);
-        console.log(err);
+         alert(res.data.message);
     }
     }
 

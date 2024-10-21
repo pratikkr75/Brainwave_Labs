@@ -35,7 +35,7 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
     const existingInvestigator = await InvestigatorModel.findOne({ email: validatedData.email });
     if (existingInvestigator) {
  
-      return res.status(400).json({message:"Account alreday exists! Please Login"});
+      return res.status(400).send({message:"Account alreday exists! Please Login"});
     }
 
     // 4. Hashing password
@@ -56,35 +56,32 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
     });
   }catch(error){
     if (error instanceof z.ZodError) {
-      // If the error is a Zod validation error, respond with a 400 status and the error details
       const validationErrors = error.errors.map((err) => ({
         path: err.path.join('.'),
         message: err.message,
       }));
       res.status(400).json({ message: 'Validation failed', errors: validationErrors});
     } else {
-      // If the error is not a Zod error, respond with a 400 status and the error details
       res.status(400).json({ message: 'Error creating user', error });
   }
 }
 });
 
-// Investigator Login Route
+
 investigatorLoginRouter.post('/api/investigator/login', async (req, res) => {
   try {
-    // 1. Validating login data
+
     const validatedData = investigatorLoginSchema.parse(req.body);
 
-    // 2. Finding investigator by email
     const investigator = await InvestigatorModel.findOne({ email: validatedData.email });
     if (!investigator) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     // 3. Comparing passwords
     const isPasswordValid = await bcrypt.compare(validatedData.password, investigator.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     // 4. Generate JWT token for the investigator
@@ -113,13 +110,9 @@ investigatorLoginRouter.post('/api/investigator/login', async (req, res) => {
     });
 
   } catch (error) {
-    // 6. Handling errors
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
-    }
-
+ 
     // Handle other errors
-    return res.status(500).json({ message: "An error occurred", error: error.message });
+    return res.status(500).json({ message: "An error occurred", error });
   }
 });
 

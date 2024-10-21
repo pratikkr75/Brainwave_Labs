@@ -14,7 +14,7 @@ export default function SignupInvestigator (){
             email:email,
             password:password
         };
-        const res = await axios.post('http://localhost:3000/api/investigator/signup', formData);
+        const res = await axios.post('http://localhost:3000/api/admin/signup', formData);
         alert(res.data.message);
     }catch(error){
             if (error.response && error.response.data && error.response.data.errors) {
