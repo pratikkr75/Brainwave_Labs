@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import {z }from 'zod';
 import mongoose from 'mongoose';
 
 const adminSchema = z.object({
@@ -35,6 +35,6 @@ const mongooseAdminSchema = new mongoose.Schema({
   }
 });
 
-const AdminModel = mongoose.model('User', mongooseAdminSchema);
+const AdminModel = mongoose.model('Admin', mongooseAdminSchema);
 
-export {AdminModel, adminSchema}
+export {AdminModel,adminSchema};

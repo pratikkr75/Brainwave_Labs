@@ -34,8 +34,8 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
     // 2. Checking for existing user
     const existingInvestigator = await InvestigatorModel.findOne({ email: validatedData.email });
     if (existingInvestigator) {
-      // 3. Redirect to the login route if the email already exists
-      return res.redirect('/api/investigator/login');
+ 
+      return res.status(400).send({message:"Account alreday exists! Please Login"});
     }
 
     // 4. Hashing password
@@ -54,33 +54,34 @@ investigatorSignupRouter.post('/api/investigator/signup', async (req, res) => {
       message: "Investigator created successfully",
       redirect: '/api/investigator/login'  // Include redirect URL in response
     });
-  } catch (error) {
-    // 6. Handling errors
+  }catch(error){
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
-    }
-
-    // 7. Handle other errors
-    return res.status(500).json({ message: "An error occurred", error: error.message });
+      const validationErrors = error.errors.map((err) => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+      res.status(400).json({ message: 'Validation failed', errors: validationErrors});
+    } else {
+      res.status(400).json({ message: 'Error creating user', error });
   }
+}
 });
 
-// Investigator Login Route
+
 investigatorLoginRouter.post('/api/investigator/login', async (req, res) => {
   try {
-    // 1. Validating login data
+
     const validatedData = investigatorLoginSchema.parse(req.body);
 
-    // 2. Finding investigator by email
     const investigator = await InvestigatorModel.findOne({ email: validatedData.email });
     if (!investigator) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     // 3. Comparing passwords
     const isPasswordValid = await bcrypt.compare(validatedData.password, investigator.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     // 4. Generate JWT token for the investigator
@@ -109,13 +110,9 @@ investigatorLoginRouter.post('/api/investigator/login', async (req, res) => {
     });
 
   } catch (error) {
-    // 6. Handling errors
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
-    }
-
+ 
     // Handle other errors
-    return res.status(500).json({ message: "An error occurred", error: error.message });
+    return res.status(500).json({ message: "An error occurred", error });
   }
 });
 

@@ -61,15 +61,15 @@ adminSignupRouter.post('/api/admin/signup', async (req, res) => {
 adminLoginRouter.post('/api/admin/login', async (req, res) => {
   try {
     const validatedData = adminLoginSchema.parse(req.body);
-
+    
     const admin = await AdminModel.findOne({ email: validatedData.email });
     if (!admin) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     const isPasswordValid = await bcrypt.compare(validatedData.password, admin.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password",error });
     }
 
     // Generate JWT token for authorisation
@@ -96,12 +96,12 @@ adminLoginRouter.post('/api/admin/login', async (req, res) => {
           lastname: admin.lastname
       }
     });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
-    }
-    return res.status(500).json({ message: "An error occurred", error: error.message });
-  }
+  }catch(error){
+ 
+      // If the error is not a Zod error, respond with a 400 status and the error details
+      res.status(400).json({ message: 'Error creating user', error });
+  
+}
 });
 
 export { adminSignupRouter, adminLoginRouter };

@@ -12,8 +12,12 @@ const projectSchema = z.object({
     name: z.string().min(1, "Investigator name is required"),
     email: z.string().email("Investigator email must be valid")
   })),
-  projectStartDate: z.date(),
-  projectEndDate: z.date(),
+  projectStartDate: z.string().refine(date => !isNaN(Date.parse(date)), {
+    message: "Invalid date format"
+  }),
+  projectEndDate: z.string().refine(date => !isNaN(Date.parse(date)), {
+    message: "Invalid date format"
+  }),
   projectDuration: z.number().positive("Project duration must be positive"),
   projectReports: z.string().optional(),  
   financialReport: z.string().optional(), 
@@ -99,11 +103,15 @@ const mongooseProjectSchema = new mongoose.Schema({
     required: true
   },
   projectCompledted:{
-    type: boolean,
+    type: Boolean,
     required : true
   }
 }, { timestamps: true });
 
 const ProjectModel = mongoose.model('Project', mongooseProjectSchema);
 
+
+
+
 export {ProjectModel, projectSchema}
+

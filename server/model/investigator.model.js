@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import {z }from 'zod';
 import mongoose from 'mongoose';
 
 const investigatorSchema = z.object({
@@ -37,5 +37,4 @@ const mongooseInvestigatorSchema = new mongoose.Schema({
 
 const InvestigatorModel = mongoose.model('Investigator', mongooseInvestigatorSchema);
 
-
-export {InvestigatorModel, investigatorSchema}
+export {InvestigatorModel,investigatorSchema};

@@ -7,7 +7,11 @@ import Connection from './database/db.js';
 // Import the admin routers
 import { adminSignupRouter, adminLoginRouter } from './user/admin/adminLoginSignup.js';
 import {investigatorSignupRouter, investigatorLoginRouter} from './user/investigator/investigatorLoginSignup.js';
-
+import {createProjectRouter} from './project/createProject.js';
+import {findInvestigator} from './user/investigator/findinvestigator.js'
+import { addInvestigator } from './user/investigator/addInvestigator.js';
+import {getAllProjectAdmin} from './project/getAllProjectAdmin.js';
+import { getAllProjectInvestigator } from './project/getAllProjectInvestigator.js';
 dotenv.config();
 
 const app = express();
@@ -29,9 +33,7 @@ app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
 
-// Initialize the database connection
 Connection();
-
 
 
 ///////////////////////////////////////////////////IMPORTANT////////////////////////////////////////////////////////////////////
