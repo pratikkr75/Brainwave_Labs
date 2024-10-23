@@ -1,39 +1,107 @@
-import {React, useState} from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  TextField,
+  Button,
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Link
+} from '@mui/material';
 import axios from 'axios';
-export default function LoginInvestigator (){
-    const [email,setemail] = useState("");
-    const [password,setPassword] = useState("");
+
+const LoginAdmin = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
     
-    const handleLoginFormSubmit = async(e) => {
-        e.preventDefault();
-        try{
-        const formData ={
-            email:email,
-            password:password
-        };
-        const res = await axios.post('http://localhost:3000/api/admin/login', formData);
-        const token = res.data.token;
-        localStorage.setItem('token',token);
-        alert(res.data.message);
-    }catch(err){
-         alert(res.data.message);
-    }
-    }
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  }
 
-    const handleEmail = (e) =>{
-         setemail(e.target.value);
-    }
-    const handlePassword = (e)=>{
-        setPassword(e.target.value);
-    }
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  }
 
-    return (
-    <div>
-        <form onSubmit={handleLoginFormSubmit}>
-       <input value={email} onChange={handleEmail} type = "email" placeholder='Enter your email here'></input>
-       <input value={password} onChange={handlePassword} type='password' placeholder='Enter password here'></input>
-       <button type='submit'>Login</button>
-       </form>
-    </div>
-    )
-}
+  const handleLoginFormSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      const formData = {
+        email: email,
+        password: password
+      };
+      const res = await axios.post('http://localhost:3000/api/admin/login', formData);
+      const token = res.data.token;
+      localStorage.setItem('token', token);
+      alert(res.data.message);
+    } catch (error) {
+      alert(error.response?.data?.message || 'An error occurred');
+    }
+  }
+
+  return (
+    <Container component="main" maxWidth="xs" sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <Paper elevation={3} sx={{ 
+        padding: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+          Login
+        </Typography>
+        <Box component="form" onSubmit={handleLoginFormSubmit} sx={{ width: '100%' }}>
+          <TextField
+            margin="dense"
+            required
+            fullWidth
+            label="Email Address"
+            type="email"
+            value={email}
+            onChange={handleEmail}
+            size="small"
+            autoFocus
+          />
+          <TextField
+            margin="dense"
+            required
+            fullWidth
+            label="Password"
+            type="password"
+            value={password}
+            onChange={handlePassword}
+            size="small"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Login
+          </Button>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="body2">
+              Don't have an account?{' '}
+              <Link
+                component="button"
+                variant="button"
+                onClick={() => navigate('/signup')}
+              >
+                Sign up
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
+  );
+};
+
+export default LoginAdmin;
