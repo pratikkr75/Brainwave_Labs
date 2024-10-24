@@ -5,26 +5,24 @@ import express from 'express';
 
 const findInvestigator = express.Router();
 
-findInvestigator.get('/api/findInvestigator/:projectCode', async (req, res) => {
+findInvestigator.get('/api/findInvestigator/', async (req, res) => {
     try {
       const { searchText } = req.query;
-      const { projectCode } = req.params;
   
       if (!searchText) {
         return res.status(400).json({ message: "Search text is required." });
       }
   
-      const project = await ProjectModel.findOne({ projectCode });
+      // const project = await ProjectModel.findOne({ projectCode });
   
-      if (!project) {
-        return res.status(404).json({ message: "Project not found." });
-      }
+      // if (!project) {
+      //   return res.status(404).json({ message: "Project not found." });
+      // }
   
-      const addedInvestigatorEmails = project.projectInvestigators.map(inv => inv.email);
+      // const addedInvestigatorEmails = project.projectInvestigators.map(inv => inv.email);
   
       const investigators = await InvestigatorModel.find({
         email: { $regex: searchText, $options: 'i' },
-        email: { $nin: addedInvestigatorEmails }  
       });
   
       if (investigators.length === 0) {

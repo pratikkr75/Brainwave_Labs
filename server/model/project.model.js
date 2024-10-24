@@ -27,7 +27,7 @@ const projectSchema = z.object({
     IFSC_Code: z.string().min(1, "IFSC code is required")
   }),
   projectBudget: z.number().positive("Project budget must be a positive number"),
-  projectCompledted: z.boolean(),
+  
 });
 
 
@@ -103,7 +103,8 @@ const mongooseProjectSchema = new mongoose.Schema({
     required: true
   },
   projectCompledted:{
-    type: Boolean,
+    type:String,
+    default:"false",
     required : true
   }
 }, { timestamps: true });
