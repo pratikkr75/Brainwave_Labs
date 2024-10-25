@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  Container,
+  Box,
+  Paper,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Button,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 function AdminConsole() {
   const [currentView, setCurrentView] = useState('createProject');
@@ -21,11 +36,9 @@ function AdminConsole() {
   useEffect(() => {
     const fetchAndDecodeToken = async () => {
       const token = localStorage.getItem('token');
-      console.log(token);
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
-          console.log(decodedToken);
           if (decodedToken.adminId) {
             setProjectAdmin({
               name: `${decodedToken.firstname} ${decodedToken.lastname}`,
@@ -45,7 +58,6 @@ function AdminConsole() {
 
     fetchAndDecodeToken();
   }, [navigate]);
-  
 
   async function handleSearchInvestigators() {
     if (searchText) {
@@ -55,7 +67,6 @@ function AdminConsole() {
         });
         setAllInvestigators(response.data);
       } catch (error) {
-        console.log(error);
         alert(error.response?.data?.message || 'Error fetching investigators');
       }
     } else {
@@ -90,18 +101,13 @@ function AdminConsole() {
       projectBankDetails,
       projectBudget,
     };
-    console.log(projectData);
     try {
-      const res = await axios.post('http://localhost:8000/api/admin/creatproject', projectData);
-      console.log(res);
+      const res = await axios.post('http://localhost:8000/api/admin/createProject', projectData);
       alert(res.data.message);
     } catch (error) {
       if (error.response?.data?.errors) {
         const backendErrors = error.response.data.errors;
-        backendErrors.forEach((err) => {
-          console.log(err);
-          alert(err.message);
-        });
+        backendErrors.forEach((err) => alert(err.message));
       } else {
         alert(error.response?.data?.message || 'An error occurred');
       }
@@ -109,26 +115,45 @@ function AdminConsole() {
   };
 
   const CreateProjectView = () => (
-    <div>
+    <Paper elevation={3} sx={{ padding: 3, borderRadius: 2 }}>
       <form onSubmit={handleCreateProject}>
-        <div>
-          <label>Project Code:</label>
-          <input type="text" value={projectCode} placeholder="Enter project code here" onChange={(e) => setProjectCode(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Title:</label>
-          <input type="text" value={projectTitle} placeholder="Enter project title here" onChange={(e) => setProjectTitle(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Admin (Name and Email):</label>
-          <input type="text" value={projectAdmin.name} readOnly />
-          <input type="email" value={projectAdmin.email} readOnly />
-        </div>
-        <div>
-          <label>Search Investigator by Email:</label>
-          <input type="text" value={searchText} placeholder="Enter investigator's email" onChange={(e) => setSearchText(e.target.value)} />
-          <button type="button" onClick={handleSearchInvestigators}>Search</button>
-        </div>
+        <Typography variant="h5" gutterBottom>Create New Project</Typography>
+        
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Code"
+          value={projectCode}
+          placeholder="Enter project code here"
+          onChange={(e) => setProjectCode(e.target.value)}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Title"
+          value={projectTitle}
+          placeholder="Enter project title here"
+          onChange={(e) => setProjectTitle(e.target.value)}
+        />
+        <Typography variant="subtitle1" gutterBottom>Project Admin (Name and Email)</Typography>
+        <TextField fullWidth margin="normal" value={projectAdmin.name} readOnly />
+        <TextField fullWidth margin="normal" value={projectAdmin.email} readOnly />
+        
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Search Investigator by Email"
+          value={searchText}
+          placeholder="Enter investigator's email"
+          onChange={(e) => setSearchText(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button variant="contained" onClick={handleSearchInvestigators}>Search</Button>
+              </InputAdornment>
+            ),
+          }}
+        />
 
         {allInvestigators.length > 0 && (
           <Box sx={{ mt: 2 }}>
@@ -136,7 +161,7 @@ function AdminConsole() {
             <List>
               {allInvestigators.map((investigator, index) => (
                 <ListItem key={index}>
-                  <ListItemText primary={`${investigator.name} (${investigator.email})`} />
+                  <ListItemText primary={`${investigator.firstname} ${investigator.lastname} (${investigator.email})`} />
                   <Button variant="outlined" onClick={() => handleAddInvestigator(investigator)}>Add</Button>
                 </ListItem>
               ))}
@@ -191,7 +216,7 @@ function AdminConsole() {
           value={projectTrack}
           onChange={(e) => setProjectTrack(e.target.value)}
         />
-        <Typography variant="h6">Project Bank Details:</Typography>
+        <Typography variant="h6" gutterBottom>Project Bank Details:</Typography>
         <TextField
           fullWidth
           margin="normal"
@@ -215,18 +240,19 @@ function AdminConsole() {
           onChange={(e) => setProjectBudget(Number(e.target.value))}
         />
         <Button type="submit" variant="contained" sx={{ mt: 2 }}>Create Project</Button>
-      </Box>
+      </form>
     </Paper>
   );
 
-  const ProfileView = () => <h2>Profile</h2>;
+  const ProfileView = () => <Paper><h2>Profile</h2></Paper>;
 
   return (
-    <Container component="main" maxWidth="md" sx={{ 
+    <Container component="main" maxWidth="md" sx={{
       minHeight: '100vh',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      backgroundColor: '#f4f6f8',
     }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Typography variant="h4" sx={{ mb: 2 }}>Admin Console</Typography>
