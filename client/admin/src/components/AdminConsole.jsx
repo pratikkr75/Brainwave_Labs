@@ -1,39 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import {jwtDecode} from 'jwt-decode'; // Ensure jwt-decode is installed
+import { useNavigate } from 'react-router-dom';
+import MyProjectsView from './MyProjectsView';
 function AdminConsole() {
-  const [currentView, setCurrentView] = useState('createProject'); // Control which view is displayed
+  const [currentView, setCurrentView] = useState('createProject');
   const [projectCode, setProjectCode] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
   const [projectAdmin, setProjectAdmin] = useState({ name: "Admin Name", email: "admin@example.com" });
   const [projectInvestigators, setProjectInvestigators] = useState([]);
-  const [allInvestigators, setAllInvestigators] = useState([]); // Stores fetched investigators
-  const [searchText, setSearchText] = useState(""); // Stores the search input
+  const [allInvestigators, setAllInvestigators] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [projectStartDate, setProjectStartDate] = useState("");
   const [projectEndDate, setProjectEndDate] = useState("");
-  const [projectDuration, setProjectDuration] = useState(0); // Duration as number
+  const [projectDuration, setProjectDuration] = useState(0);
   const [projectTrack, setProjectTrack] = useState("");
-  const [projectBankDetails, setProjectBankDetails] = useState({ accountNumber: "", IFSC_Code: "" }); // Bank details now include IFSC
+  const [projectBankDetails, setProjectBankDetails] = useState({ accountNumber: "", IFSC_Code: "" });
   const [projectBudget, setProjectBudget] = useState(0);
 
-  // Fetch investigators from backend based on projectCode and searchText
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAndDecodeToken = async () => {
+      const token = localStorage.getItem('token');
+      console.log(token);
+      if (token) {
+        try {
+          const decodedToken = jwtDecode(token);
+          console.log(decodedToken);
+          if (decodedToken.adminId) {
+            setProjectAdmin({
+              name: `${decodedToken.firstname} ${decodedToken.lastname}`,
+              email: decodedToken.email,
+            });
+          } else {
+            navigate('/api/admin/login'); // Redirect if unauthorized
+          }
+        } catch (error) {
+          console.error("Failed to decode token:", error);
+          navigate('/api/admin/login'); // Redirect if decoding fails
+        }
+      } else {
+        navigate('/api/admin/login'); // Redirect if no token
+      }
+    };
+
+    fetchAndDecodeToken();
+  }, [navigate]);
+  
+
   async function handleSearchInvestigators() {
     if (searchText) {
       try {
         const response = await axios.get('http://localhost:8000/api/findInvestigator/', {
           params: { searchText: searchText },
         });
-        setAllInvestigators(response.data); // Set the fetched investigators
+        setAllInvestigators(response.data);
       } catch (error) {
         console.log(error);
-        alert(error.response.data.message);
+        alert(error.response?.data?.message || 'Error fetching investigators');
       }
     } else {
       alert("Please enter Search Text to search investigators.");
     }
   }
 
-  // Add selected investigator to projectInvestigators list and remove from matching investigators
   function handleAddInvestigator(investigator) {
     if (!projectInvestigators.some(inv => inv.email === investigator.email)) {
       const newInvestigator = { name: investigator.firstname + " " + investigator.lastname, email: investigator.email };
@@ -42,13 +73,11 @@ function AdminConsole() {
     }
   }
 
-  // Remove selected investigator from projectInvestigators list
   function handleRemoveInvestigator(investigator) {
     setProjectInvestigators(projectInvestigators.filter(inv => inv.email !== investigator.email));
     setAllInvestigators([...allInvestigators, investigator]);
   }
 
-  // Handle project creation form submission
   const handleCreateProject = async (e) => {
     e.preventDefault();
     const projectData = {
@@ -81,7 +110,6 @@ function AdminConsole() {
     }
   };
 
-  // Views
   const CreateProjectView = () => (
     <div>
       <form onSubmit={handleCreateProject}>
@@ -99,7 +127,7 @@ function AdminConsole() {
           <input type="email" value={projectAdmin.email} readOnly />
         </div>
         <div>
-          <label>Search Investigator by Email:</label>
+        <label>Search Investigator by Email:</label>
           <input type="text" value={searchText} placeholder="Enter investigator's email" onChange={(e) => setSearchText(e.target.value)} />
           <button type="button" onClick={handleSearchInvestigators}>Search</button>
         </div>
@@ -161,7 +189,6 @@ function AdminConsole() {
     </div>
   );
 
-  const MyProjectsView = () => <h2>My Projects</h2>;
   const ProfileView = () => <h2>Profile</h2>;
 
   return (
@@ -177,7 +204,7 @@ function AdminConsole() {
 
       <div style={{ flex: 1, padding: '20px' }}>
         {currentView === 'createProject' && <CreateProjectView />}
-        {currentView === 'myProjects' && <MyProjectsView />}
+        {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
         {currentView === 'profile' && <ProfileView />}
       </div>
     </div>

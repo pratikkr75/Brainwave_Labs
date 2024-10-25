@@ -3,7 +3,7 @@ import express from 'express';
 
 const getAllProjectAdmin = express.Router();
 
-getAllProjectAdmin.get('/api/admin/getAllProjects',async(req,res)=>{
+getAllProjectAdmin.get('/api/admin/getAllProjectsAdmin',async(req,res)=>{
     const {name,email} = req.query;
     console.log(name,email);
     const projects = await ProjectModel.find({'projectAdmin.name':name,'projectAdmin.email':email});
@@ -11,7 +11,6 @@ getAllProjectAdmin.get('/api/admin/getAllProjects',async(req,res)=>{
     if(!projects){
         return res.status(400).json({message:"No projects created"});
     }
-    console.log(projects);
     return res.status(200).json(projects);
 })
 export {getAllProjectAdmin};
