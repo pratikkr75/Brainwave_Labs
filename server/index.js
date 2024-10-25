@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import Connection from './database/db.js';
+
+import Connection from './database/db.js'; 
 
 // Import the admin routers
 import { adminSignupRouter, adminLoginRouter } from './user/admin/adminLoginSignup.js';
@@ -29,6 +30,21 @@ app.use(adminLoginRouter);
 // Use the investigator routers
 app.use(investigatorSignupRouter);
 app.use(investigatorLoginRouter);
+
+//createProject router
+app.use(createProjectRouter);
+
+//find list of Investigator based on email (only those that do not belong to a particular project)
+app.use(findInvestigator);
+
+// add Investigator to project
+app.use(addInvestigator);
+
+//get all projects for a admin
+app.use(getAllProjectAdmin);
+
+//get all projects for a investigator
+app.use(getAllProjectInvestigator);
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);

@@ -15,8 +15,8 @@ function App() {
       <Outlet/>
       {/* <Footer/> */}
       {/* <Home /> */}
-      <SignupAdmin />
-      {/* <LoginAdmin /> */}
+      {/* <SignupAdmin /> */}
+      <LoginAdmin />
     </>
   )
 }
