@@ -88,7 +88,7 @@ adminLoginRouter.post('/api/admin/login', async (req, res) => {
     return res.status(200).json({
       message: "Login successful",
         token: token,
-        redirect: '/admin/home',  //  redirect URL to home page in response to redirect after successful login 
+        redirect: '/admin/api/console',  //  redirect URL to home page in response to redirect after successful login 
         admin: {
           id: admin._id,
           email: admin.email,
@@ -99,7 +99,7 @@ adminLoginRouter.post('/api/admin/login', async (req, res) => {
   }catch(error){
  
       // If the error is not a Zod error, respond with a 400 status and the error details
-      res.status(400).json({ message: 'Error creating user', error });
+      res.status(400).json({ message: 'Invalid email id or password', error });
   
 }
 });

@@ -13,6 +13,8 @@ import {findInvestigator} from './user/investigator/findinvestigator.js'
 import { addInvestigator } from './user/investigator/addInvestigator.js';
 import {getAllProjectAdmin} from './project/getAllProjectAdmin.js';
 import { getAllProjectInvestigator } from './project/getAllProjectInvestigator.js';
+import { projectprofileAdmin } from './project/projectprofileAdmin.js';
+import { deleteInvestigator } from './project/deleteInvestigator.js';
 dotenv.config();
 
 const app = express();
@@ -45,6 +47,12 @@ app.use(getAllProjectAdmin);
 
 //get all projects for a investigator
 app.use(getAllProjectInvestigator);
+
+//get details of a particular project for admin
+app.use(projectprofileAdmin);
+
+//delete an investigator from a project by admin
+app.use(deleteInvestigator);
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);

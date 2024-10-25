@@ -8,6 +8,7 @@ import './index.css'
 import LoginAdmin from './components/LoginAdmin.jsx';
 import SignupAdmin from './components/SignupAdmin.jsx';
 import AdminConsole from './components/AdminConsole.jsx';
+import ProjectProfile from './components/ProjectProfile.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App/>}>
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
     <Route path = "api/admin/login" element ={<LoginAdmin/>}/>
     <Route path = "api/admin/signup" element = {<SignupAdmin/>}/>
     <Route path = "api/admin/console" element = {<AdminConsole/>}/>
+    <Route path = "api/admin/project/:projectCode" element={<ProjectProfile/>}/>
     </Route>
   )
 );

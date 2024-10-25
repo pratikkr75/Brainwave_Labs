@@ -31,11 +31,14 @@ const LoginAdmin = () => {
         email: email,
         password: password
       };
+
       const res = await axios.post('http://localhost:8000/api/admin/login', formData);
       const token = res.data.token;
       localStorage.setItem('token', token);
       alert(res.data.message);
+      navigate('/api/admin/console');
     } catch (error) {
+      console.log(error);
       alert(error.response?.data?.message || 'An error occurred');
     }
   }
@@ -92,7 +95,7 @@ const LoginAdmin = () => {
               <Link
                 component="button"
                 variant="button"
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/api/admin/signup')}
               >
                 Sign up
               </Link>
