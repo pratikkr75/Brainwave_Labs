@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { 
+  Container,
+  Paper,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
+} from '@mui/material';
 
 function AdminConsole() {
   const [currentView, setCurrentView] = useState('createProject'); // Control which view is displayed
@@ -83,104 +95,170 @@ function AdminConsole() {
 
   // Views
   const CreateProjectView = () => (
-    <div>
-      <form onSubmit={handleCreateProject}>
-        <div>
-          <label>Project Code:</label>
-          <input type="text" value={projectCode} placeholder="Enter project code here" onChange={(e) => setProjectCode(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Title:</label>
-          <input type="text" value={projectTitle} placeholder="Enter project title here" onChange={(e) => setProjectTitle(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Admin (Name and Email):</label>
-          <input type="text" value={projectAdmin.name} readOnly />
-          <input type="email" value={projectAdmin.email} readOnly />
-        </div>
-        <div>
-          <label>Search Investigator by Email:</label>
-          <input type="text" value={searchText} placeholder="Enter investigator's email" onChange={(e) => setSearchText(e.target.value)} />
-          <button type="button" onClick={handleSearchInvestigators}>Search</button>
-        </div>
+    <Paper elevation={3} sx={{ padding: 3 }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>Create Project</Typography>
+      <Box component="form" onSubmit={handleCreateProject}>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Code"
+          value={projectCode}
+          onChange={(e) => setProjectCode(e.target.value)}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Title"
+          value={projectTitle}
+          onChange={(e) => setProjectTitle(e.target.value)}
+        />
+        <Typography variant="subtitle1">Project Admin:</Typography>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Admin Name"
+          value={projectAdmin.name}
+          readOnly
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Admin Email"
+          value={projectAdmin.email}
+          readOnly
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Search Investigator by Email"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Button variant="contained" onClick={handleSearchInvestigators}>Search</Button>
 
         {allInvestigators.length > 0 && (
-          <div>
-            <h3>Matching Investigators:</h3>
-            {allInvestigators.map((investigator, index) => (
-              <div key={index}>
-                <span>{investigator.name} ({investigator.email})</span>
-                <button type="button" onClick={() => handleAddInvestigator(investigator)}>Add</button>
-              </div>
-            ))}
-          </div>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6">Matching Investigators:</Typography>
+            <List>
+              {allInvestigators.map((investigator, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={`${investigator.name} (${investigator.email})`} />
+                  <Button variant="outlined" onClick={() => handleAddInvestigator(investigator)}>Add</Button>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         )}
 
-        <div>
-          <h4>Selected Investigators:</h4>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Selected Investigators:</Typography>
           {projectInvestigators.length > 0 ? (
             projectInvestigators.map((investigator, index) => (
-              <div key={index}>
-                <p>{investigator.name} ({investigator.email})</p>
-                <button type="button" onClick={() => handleRemoveInvestigator(investigator)}>Remove</button>
-              </div>
+              <ListItem key={index}>
+                <ListItemText primary={`${investigator.name} (${investigator.email})`} />
+                <Button variant="outlined" onClick={() => handleRemoveInvestigator(investigator)}>Remove</Button>
+              </ListItem>
             ))
           ) : (
-            <p>No investigators added yet</p>
+            <Typography>No investigators added yet</Typography>
           )}
-        </div>
+        </Box>
 
-        <div>
-          <label>Project Start Date:</label>
-          <input type="date" value={projectStartDate} onChange={(e) => setProjectStartDate(e.target.value)} />
-        </div>
-        <div>
-          <label>Project End Date:</label>
-          <input type="date" value={projectEndDate} onChange={(e) => setProjectEndDate(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Duration (in months):</label>
-          <input type="number" value={projectDuration} placeholder="Enter project duration" onChange={(e) => setProjectDuration(Number(e.target.value))} />
-        </div>
-        <div>
-          <label>Project Track:</label>
-          <input type="text" value={projectTrack} placeholder="Enter project track" onChange={(e) => setProjectTrack(e.target.value)} />
-        </div>
-        <div>
-          <label>Project Bank Details:</label>
-          <input type="text" value={projectBankDetails.accountNumber} placeholder="Enter bank account number" onChange={(e) => setProjectBankDetails({ ...projectBankDetails, accountNumber: e.target.value })} />
-          <input type="text" value={projectBankDetails.IFSC_Code} placeholder="Enter IFSC code" onChange={(e) => setProjectBankDetails({ ...projectBankDetails, IFSC_Code: e.target.value })} />
-        </div>
-        <div>
-          <label>Project Budget:</label>
-          <input type="number" value={projectBudget} placeholder="Enter project budget" onChange={(e) => setProjectBudget(Number(e.target.value))} />
-        </div>
-
-        <button type="submit">Create Project</button>
-      </form>
-    </div>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Start Date"
+          type="date"
+          value={projectStartDate}
+          onChange={(e) => setProjectStartDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project End Date"
+          type="date"
+          value={projectEndDate}
+          onChange={(e) => setProjectEndDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Duration (in months)"
+          type="number"
+          value={projectDuration}
+          onChange={(e) => setProjectDuration(Number(e.target.value))}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Track"
+          value={projectTrack}
+          onChange={(e) => setProjectTrack(e.target.value)}
+        />
+        <Typography variant="h6">Project Bank Details:</Typography>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Bank Account Number"
+          value={projectBankDetails.accountNumber}
+          onChange={(e) => setProjectBankDetails({ ...projectBankDetails, accountNumber: e.target.value })}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="IFSC Code"
+          value={projectBankDetails.IFSC_Code}
+          onChange={(e) => setProjectBankDetails({ ...projectBankDetails, IFSC_Code: e.target.value })}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Project Budget"
+          type="number"
+          value={projectBudget}
+          onChange={(e) => setProjectBudget(Number(e.target.value))}
+        />
+        <Button type="submit" variant="contained" sx={{ mt: 2 }}>Create Project</Button>
+      </Box>
+    </Paper>
   );
 
   const MyProjectsView = () => <h2>My Projects</h2>;
   const ProfileView = () => <h2>Profile</h2>;
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div>
-        <h3>Admin Console</h3>
-        <ul>
-          <li onClick={() => setCurrentView('createProject')}>Create Project</li>
-          <li onClick={() => setCurrentView('myProjects')}>My Projects</li>
-          <li onClick={() => setCurrentView('profile')}>Profile</li>
-        </ul>
-      </div>
+    <Container component="main" maxWidth="md" sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>Admin Console</Typography>
+        <Paper elevation={3} sx={{ padding: 2, mb: 2 }}>
+          <List>
+            <ListItem button onClick={() => setCurrentView('createProject')}>
+              <ListItemText primary="Create Project" />
+            </ListItem>
+            <Divider />
+            <ListItem button onClick={() => setCurrentView('myProjects')}>
+              <ListItemText primary="My Projects" />
+            </ListItem>
+            <Divider />
+            <ListItem button onClick={() => setCurrentView('profile')}>
+              <ListItemText primary="Profile" />
+            </ListItem>
+          </List>
+        </Paper>
 
-      <div style={{ flex: 1, padding: '20px' }}>
+        {/* Render the selected view */}
         {currentView === 'createProject' && <CreateProjectView />}
         {currentView === 'myProjects' && <MyProjectsView />}
         {currentView === 'profile' && <ProfileView />}
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
 
