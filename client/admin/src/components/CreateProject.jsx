@@ -61,6 +61,7 @@ function CreateProject({name,email}) {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
+
     const projectData = {
       projectCode,
       projectTitle,
@@ -73,6 +74,9 @@ function CreateProject({name,email}) {
       projectBankDetails,
       projectBudget,
     };
+    projectAdmin.name = name;
+    projectAdmin.email = email;
+    setProjectAdmin(projectAdmin);
     try {
       const res = await axios.post('http://localhost:8000/api/admin/creatproject', projectData);
       alert(res.data.message);
@@ -109,8 +113,8 @@ function CreateProject({name,email}) {
               placeholder="Enter project title here"
             />
             <Typography variant="subtitle1" gutterBottom>Project Admin (Name and Email)</Typography>
-            <TextField fullWidth margin="normal" value={projectAdmin.name} disabled />
-            <TextField fullWidth margin="normal" value={projectAdmin.email} disabled />
+            <TextField fullWidth margin="normal" value={name} readonly />
+            <TextField fullWidth margin="normal" value={email} readonly />
             <Typography variant="subtitle1" gutterBottom>Search new Investigators here</Typography>
             <Box component="form" onSubmit={handleSearchInvestigators} sx={{ width: '100%' }}>
               <TextField
