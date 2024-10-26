@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import CreateProject from '../components/CreateProject';
 import {
   Container,
   Box,
@@ -10,28 +10,15 @@ import {
   ListItemText,
   Divider,
   Button,
-  TextField,
-  InputAdornment,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import MyProjectsView from '../components/MyProjectsView';
-import ProtectedRoute from './ProtectedRoute';
 
 function AdminConsole() {
   const [currentView, setCurrentView] = useState('createProject');
-  const [projectCode, setProjectCode] = useState("");
-  const [projectTitle, setProjectTitle] = useState("");
-  const [projectAdmin, setProjectAdmin] = useState({ name: "Admin Name", email: "admin@example.com" });
-  const [projectInvestigators, setProjectInvestigators] = useState([]);
-  const [allInvestigators, setAllInvestigators] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [projectStartDate, setProjectStartDate] = useState("");
-  const [projectEndDate, setProjectEndDate] = useState("");
-  const [projectDuration, setProjectDuration] = useState(0);
-  const [projectTrack, setProjectTrack] = useState("");
-  const [projectBankDetails, setProjectBankDetails] = useState({ accountNumber: "", IFSC_Code: "" });
-  const [projectBudget, setProjectBudget] = useState(0);
+  const [projectAdmin, setProjectAdmin] = useState({ name: "", email: "" });
+
   const navigate = useNavigate();
   useEffect(() => {
     const fetchAndDecodeToken = async () => {
@@ -59,253 +46,14 @@ function AdminConsole() {
     fetchAndDecodeToken();
   }, [navigate]);
 
-
-  const handleSearchInvestigators = async (e) => {
-    e.preventDefault(); // Prevent form submission
-    if (searchText) {
-      try {
-        const response = await axios.get('http://localhost:8000/api/findInvestigator/', {
-          params: { searchText: searchText },
-        });
-        setAllInvestigators(response.data);
-      } catch (error) {
-        alert(error.response?.data?.message || 'Error fetching investigators');
-      }
-    } else {
-      alert("Please enter Search Text to search investigators.");
-    }
-  };
-
-  const handleAddInvestigator = (investigator) => {
-    if (!projectInvestigators.some(inv => inv.email === investigator.email)) {
-      const newInvestigator = { name: investigator.firstname + " " + investigator.lastname, email: investigator.email };
-      setProjectInvestigators(prev => [...prev, newInvestigator]);
-      setAllInvestigators(prev => prev.filter(inv => inv.email !== investigator.email));
-    }
-  };
-
-  const handleRemoveInvestigator = (investigator) => {
-    setProjectInvestigators(prev => prev.filter(inv => inv.email !== investigator.email));
-    setAllInvestigators(prev => [...prev, investigator]);
-  };
-
-  const handleCreateProject = async (e) => {
-    e.preventDefault(); // Prevent form submission
-    const projectData = {
-      projectCode,
-      projectTitle,
-      projectAdmin,
-      projectInvestigators,
-      projectStartDate,
-      projectEndDate,
-      projectDuration,
-      projectTrack,
-      projectBankDetails,
-      projectBudget,
-    };
-    try {
-      const res = await axios.post('http://localhost:8000/api/admin/createProject', projectData);
-      alert(res.data.message);
-    } catch (error) {
-      if (error.response?.data?.errors) {
-        const backendErrors = error.response.data.errors;
-        backendErrors.forEach((err) => alert(err.message));
-      } else {
-        alert(error.response?.data?.message || 'An error occurred');
-      }
-    }
-  };
-
-  const CreateProjectView = () => (
-    <Paper elevation={3} sx={{ padding: 3, borderRadius: 2 }}>
-      <form onSubmit={handleCreateProject}>
-        <Typography variant="h5" gutterBottom>Create New Project</Typography>
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Code"
-          value={projectCode}
-          onChange={(e) => setProjectCode(e.target.value)}
-          placeholder="Enter project code here"
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Title"
-          value={projectTitle}
-          onChange={(e) => setProjectTitle(e.target.value)}
-          placeholder="Enter project title here"
-        />
-        
-        <Typography variant="subtitle1" gutterBottom>Project Admin (Name and Email)</Typography>
-        <TextField 
-          fullWidth 
-          margin="normal" 
-          value={projectAdmin.name} 
-          disabled
-        />
-        <TextField 
-          fullWidth 
-          margin="normal" 
-          value={projectAdmin.email} 
-          disabled
-        />
-        
-        <Typography variant="subtitle1" gutterBottom>Search new Investigators here</Typography>
-
-        <Box component="form" onSubmit={handleSearchInvestigators} sx={{ width: '100%' }}>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Search Investigator by Email"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeholder="Enter investigator's email"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button 
-                    variant="contained" 
-                    onClick={handleSearchInvestigators}
-                    type="button"
-                  >
-                    Search
-                  </Button>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
-        {allInvestigators.length > 0 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">Matching Investigators:</Typography>
-            <List>
-              {allInvestigators.map((investigator, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={`${investigator.firstname} ${investigator.lastname} (${investigator.email})`} />
-                  <Button 
-                    variant="outlined" 
-                    onClick={() => handleAddInvestigator(investigator)}
-                    type="button"
-                  >
-                    Add
-                  </Button>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        )}
-
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Selected Investigators:</Typography>
-          {projectInvestigators.length > 0 ? (
-            projectInvestigators.map((investigator, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={`${investigator.name} (${investigator.email})`} />
-                <Button 
-                  variant="outlined" 
-                  onClick={() => handleRemoveInvestigator(investigator)}
-                  type="button"
-                >
-                  Remove
-                </Button>
-              </ListItem>
-            ))
-          ) : (
-            <Typography>No investigators added yet</Typography>
-          )}
-        </Box>
-
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Start Date"
-          type="date"
-          value={projectStartDate}
-          onChange={(e) => setProjectStartDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project End Date"
-          type="date"
-          value={projectEndDate}
-          onChange={(e) => setProjectEndDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Duration (in months)"
-          type="number"
-          value={projectDuration}
-          onChange={(e) => setProjectDuration(Number(e.target.value))}
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Track"
-          value={projectTrack}
-          onChange={(e) => setProjectTrack(e.target.value)}
-        />
-        
-        <Typography variant="h6" gutterBottom>Project Bank Details:</Typography>
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Bank Account Number"
-          value={projectBankDetails.accountNumber}
-          onChange={(e) => setProjectBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="IFSC Code"
-          value={projectBankDetails.IFSC_Code}
-          onChange={(e) => setProjectBankDetails(prev => ({ ...prev, IFSC_Code: e.target.value }))}
-        />
-        
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Project Budget"
-          type="number"
-          value={projectBudget}
-          onChange={(e) => setProjectBudget(Number(e.target.value))}
-        />
-        
-        <Button 
-          type="submit" 
-          variant="contained" 
-          sx={{ mt: 2 }}
-        >
-          Create Project
-        </Button>
-      </form>
-    </Paper>
-  );
-
   const ProfileView = () => <Paper><h2>Profile</h2></Paper>;
 
   return (
-    <Container component="main" maxWidth="md" sx={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f4f6f8',
-    }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>Admin Console</Typography>
-        <Paper elevation={3} sx={{ padding: 2, mb: 2 }}>
+    <Container component="main" maxWidth="lg" sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', padding: 2 }}>
+      <Box sx={{ display: 'flex', height: '100%' }}>
+        {/* Sidebar for navigation */}
+        <Paper elevation={3} sx={{ width: '250px', padding: 2, marginRight: 2 }}>
+          <Typography variant="h5" gutterBottom>Admin Console</Typography>
           <List>
             <ListItem button onClick={() => setCurrentView('createProject')}>
               <ListItemText primary="Create Project" />
@@ -321,9 +69,12 @@ function AdminConsole() {
           </List>
         </Paper>
 
-        {currentView === 'createProject' && <CreateProjectView />}
-        {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
-        {currentView === 'profile' && <ProfileView />}
+        {/* Main content area */}
+        <Box sx={{ flexGrow: 1, padding: 2 }}>
+          {currentView === 'createProject' && <CreateProject  email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'profile' && <ProfileView />}
+        </Box>
       </Box>
     </Container>
   );

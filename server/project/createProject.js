@@ -18,15 +18,15 @@ createProjectRouter.post('/api/admin/creatproject', async(req, res) => {
             });
             await newProject.save();
             
-            // Get admin email from request (assuming it's stored in req.user.email)
-            const adminEmail = req.user.email;
+            // // Get admin email from request (assuming it's stored in req.user.email)
+            // const adminEmail = req.user.email;
             
-            // Send emails after successful project creation
-            await sendEmailNotifications(
-              validatedData.projectInvestigators, 
-              validatedData.projectTitle,
-              adminEmail  // Passing admin's email to the email service
-            );
+            // // Send emails after successful project creation
+            // await sendEmailNotifications(
+            //   validatedData.projectInvestigators, 
+            //   validatedData.projectTitle,
+            //   adminEmail  // Passing admin's email to the email service
+            // );
             
             return res.status(201).json({ 
                 message: "Project created successfully",
