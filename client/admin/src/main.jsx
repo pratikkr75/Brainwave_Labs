@@ -16,7 +16,7 @@ const router = createBrowserRouter(
     <Route path = "api/admin/login" element ={<LoginAdmin/>}/>
     <Route path = "api/admin/signup" element = {<SignupAdmin/>}/>
     <Route path = "api/admin/console" element = {<AdminConsole/>}/>
-    <Route path = "api/admin/project/:projectCode" element={<ProjectProfile/>}/>
+    <Route path = "api/admin/console/project/:projectCode" element={<ProjectProfile/>}/>
     </Route>
   )
 );

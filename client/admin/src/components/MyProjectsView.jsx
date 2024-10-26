@@ -61,7 +61,7 @@ function MyProjectsView({ name, email }) {
 
   // Update button
   const handleUpdateClick = async (projectCode) => {
-    navigate(`/api/admin/project/${projectCode}`);
+    navigate(`project/${projectCode}`);
   };
 
   return (
