@@ -14,7 +14,8 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
+import MyProjectsView from '../components/MyProjectsView';
 
 function AdminConsole() {
   const [currentView, setCurrentView] = useState('createProject');

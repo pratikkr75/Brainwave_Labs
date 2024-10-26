@@ -16,6 +16,7 @@ const SignupInvestigator = () => {
     const [password,setPassword] = useState("");
     const [firstname,setFirstName] = useState("");
     const [lastname,setLastName] = useState("");
+    const navigate = useNavigate();
     const handleSignupFormSubmit = async(e) => {
         e.preventDefault();
         try{
@@ -119,7 +120,7 @@ const SignupInvestigator = () => {
               <Link
                 component="button"
                 variant="button"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/api/investigator/login')}
               >
                 Log in
               </Link>

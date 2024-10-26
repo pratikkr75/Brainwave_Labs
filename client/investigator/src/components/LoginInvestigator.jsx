@@ -14,7 +14,7 @@ import axios from 'axios';
 const LoginInvestigator = () => {
     const [email,setemail] = useState("");
     const [password,setPassword] = useState("");
-    
+    const navigate = useNavigate();
     const handleLoginFormSubmit = async(e) => {
         e.preventDefault();
         try{
@@ -26,6 +26,7 @@ const LoginInvestigator = () => {
         const token = res.data.token;
         localStorage.setItem('token',token);
         alert(res.data.message);
+        navigate('/api/investigator/console');
     }catch(err){
         alert(err.response.data.message);
         console.log(err);
@@ -91,7 +92,7 @@ const LoginInvestigator = () => {
               <Link
                 component="button"
                 variant="button"
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/api/investigator/signup')}
               >
                 Sign up
               </Link>

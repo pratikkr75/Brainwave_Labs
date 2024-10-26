@@ -123,7 +123,7 @@ const SignupAdmin = () => {
               <Link
                 component="button"
                 variant="button"
-                onClick={() => navigate('login')}
+                onClick={() => navigate('/api/admin/login')}
               >
                 Log in
               </Link>
