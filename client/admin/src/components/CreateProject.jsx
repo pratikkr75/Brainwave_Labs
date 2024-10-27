@@ -78,7 +78,7 @@ function CreateProject({name,email}) {
     projectAdmin.email = email;
     setProjectAdmin(projectAdmin);
     try {
-      const res = await axios.post('http://localhost:8000/api/admin/creatproject', projectData);
+      const res = await axios.post('http://localhost:8000/api/admin/createproject', projectData);
       alert(res.data.message);
     } catch (error) {
       if (error.response?.data?.errors) {
