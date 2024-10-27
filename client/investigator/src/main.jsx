@@ -7,14 +7,16 @@ import { createBrowserRouter,createRoutesFromElements } from 'react-router-dom';
 import './index.css'
 import LoginInvestigator from './components/LoginInvestigator.jsx';
 import SignupInvestigator from './components/SignupInvestigator.jsx';
-import ProtectedRoute from '../../admin/src/components/ProtectedRoute.jsx';
+import InvestigatorConsole from './components/InvestigatorConsole.jsx';
+import ProjectProfile from './components/ProjectProfile.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App/>}>
     <Route index element={<Home/>}/>
     <Route path = "api/investigator/login" element ={<LoginInvestigator/>}/>
     <Route path = "api/investigator/signup" element = {<SignupInvestigator/>}/>
-    <Route path ="api/admin/console" element ={<ProtectedRoute/>}/>
+    <Route path = "api/investigator/console" element = {<InvestigatorConsole/>}/>
+    <Route path = "api/investigator/console/project/:projectCode" element={<ProjectProfile/>}/>
     </Route>
   )
 );

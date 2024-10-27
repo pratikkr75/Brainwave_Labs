@@ -5,7 +5,6 @@ const getAllProjectAdmin = express.Router();
 
 getAllProjectAdmin.get('/api/admin/getAllProjectsAdmin',async(req,res)=>{
     const {name,email} = req.query;
-    console.log(name,email);
     const projects = await ProjectModel.find({'projectAdmin.name':name,'projectAdmin.email':email});
 
     if(!projects){

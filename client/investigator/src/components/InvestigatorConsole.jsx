@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CreateProject from '../components/CreateProject';
 import {
   Container,
   Box,
@@ -14,9 +13,9 @@ import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import MyProjectsView from '../components/MyProjectsView';
 
-function AdminConsole() {
-  const [currentView, setCurrentView] = useState('createProject');
-  const [projectAdmin, setProjectAdmin] = useState({ name: "", email: "" });
+function InvestigatorConsole() {
+  const [currentView, setCurrentView] = useState('myProjects');
+  const [projectInvestigator, setProjectInvestigator] = useState({ name: "", email: "" });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -25,20 +24,20 @@ function AdminConsole() {
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
-          if (decodedToken.adminId) {
-            setProjectAdmin({
+          if (decodedToken.investigatorId) {
+            setProjectInvestigator({
               name: `${decodedToken.firstname} ${decodedToken.lastname}`,
               email: decodedToken.email,
             });
           } else {
-            navigate('/api/admin/login');
+            navigate('/api/investigator/login');
           }
         } catch (error) {
           console.error("Failed to decode token:", error);
-          navigate('/api/admin/login');
+          navigate('/api/investigator/login');
         }
       } else {
-        navigate('/api/admin/login');
+        navigate('/api/investigator/login');
       }
     };
 
@@ -46,25 +45,15 @@ function AdminConsole() {
   }, [navigate]);
 
   const ProfileView = () => <Paper><h2>Profile</h2></Paper>;
+  const RequestView = () => <Paper><h2>Request</h2></Paper>;
 
   return (
     <Container component="main" maxWidth="lg" sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', padding: 2 }}>
       <Box sx={{ display: 'flex', height: '100%' }}>
         {/* Sidebar for navigation */}
         <Paper elevation={3} sx={{ width: '250px', padding: 2, marginRight: 2 }}>
-          <Typography variant="h5" gutterBottom>Admin Console</Typography>
+          <Typography variant="h5" gutterBottom>Investigator Console</Typography>
           <List>
-            <ListItem
-              button
-              onClick={() => setCurrentView('createProject')}
-              sx={{
-                backgroundColor: currentView === 'createProject' ? '#e0f7fa' : 'transparent',
-                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
-              }}
-            >
-              <ListItemText primary="Create Project" />
-            </ListItem>
-            <Divider />
             <ListItem
               button
               onClick={() => setCurrentView('myProjects')}
@@ -74,6 +63,17 @@ function AdminConsole() {
               }}
             >
               <ListItemText primary="My Projects" />
+            </ListItem>
+            <Divider />
+            <ListItem
+              button
+              onClick={() => setCurrentView('request')}
+              sx={{
+                backgroundColor: currentView === 'request' ? '#e0f7fa' : 'transparent',
+                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
+              }}
+            >
+              <ListItemText primary="Request" />
             </ListItem>
             <Divider />
             <ListItem
@@ -91,8 +91,8 @@ function AdminConsole() {
 
         {/* Main content area */}
         <Box sx={{ flexGrow: 1, padding: 2 }}>
-          {currentView === 'createProject' && <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
-          {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'myProjects' && <MyProjectsView email={projectInvestigator.email} name={projectInvestigator.name} />}
+          {currentView === 'request' && <RequestView />}
           {currentView === 'profile' && <ProfileView />}
         </Box>
       </Box>
@@ -100,4 +100,4 @@ function AdminConsole() {
   );
 }
 
-export default AdminConsole;
+export default InvestigatorConsole;
