@@ -24,6 +24,7 @@ function MyProjectsView({ name, email }) {
 
   // Fetch all projects for the admin on component mount
   useEffect(() => {
+
     const fetchProjects = async () => {
       try {
         const res = await axios.get('http://localhost:8000/api/admin/getAllProjectsAdmin', {

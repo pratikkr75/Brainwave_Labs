@@ -28,7 +28,7 @@ const LoginInvestigator = () => {
         alert(res.data.message);
         navigate('/api/investigator/console');
     }catch(err){
-        alert(err.response.data.message);
+        // alert(err.response.data.message);
         console.log(err);
     }
     }

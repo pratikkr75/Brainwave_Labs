@@ -8,7 +8,7 @@ import './index.css'
 import LoginInvestigator from './components/LoginInvestigator.jsx';
 import SignupInvestigator from './components/SignupInvestigator.jsx';
 import InvestigatorConsole from './components/InvestigatorConsole.jsx';
-import ProjectProfile from './components/ProjectProfile.jsx';
+import ProjectProfile from './components/InvestigatorProjectProfile.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App/>}>

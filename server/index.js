@@ -15,6 +15,13 @@ import {getAllProjectAdmin} from './project/getAllProjectAdmin.js';
 import { getAllProjectInvestigator } from './project/getAllProjectInvestigator.js';
 import { projectprofileAdmin } from './project/projectprofileAdmin.js';
 import { deleteInvestigator } from './project/deleteInvestigator.js';
+import { updateProject } from "./project/updateProject.js";
+import { updateTrack } from "./project/updateTrack.js";
+import { projectprofileInvestigator } from './project/projectprofileInvestigator.js';
+import {investigatorProjectRequest} from './project/investigatorProjectRequest.js';
+import { adminpendingRequests } from './project/adminpendingRequests.js';
+import { adminRejectRequest } from './project/adminRejectRequest.js';
+import { adminAcceptRequest } from './project/adminAcceptRequest.js';
 dotenv.config();
 
 const app = express();
@@ -53,6 +60,25 @@ app.use(projectprofileAdmin);
 
 //delete an investigator from a project by admin
 app.use(deleteInvestigator);
+
+//update project details requested by admin
+app.use(updateProject);
+app.use(updateTrack);
+
+//get particular project for investigator
+app.use(projectprofileInvestigator);
+
+//request by investigator for change in project
+app.use(investigatorProjectRequest);
+
+//to get all pending requests for admin
+app.use(adminpendingRequests);
+
+//to reject request made by investigator from admin
+app.use(adminRejectRequest);
+
+//to accept request made by investigator from admin
+app.use(adminAcceptRequest);
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);

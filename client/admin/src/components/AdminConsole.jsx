@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
-import MyProjectsView from '../components/MyProjectsView';
-
+import MyProjectsView from '../components/AdminProjectsView';
+import PendingRequets from '../components/PendingRequests';
 function AdminConsole() {
   const [currentView, setCurrentView] = useState('createProject');
   const [projectAdmin, setProjectAdmin] = useState({ name: "", email: "" });
@@ -78,6 +78,17 @@ function AdminConsole() {
             <Divider />
             <ListItem
               button
+              onClick={() => setCurrentView('pendingRequests')}
+              sx={{
+                backgroundColor: currentView === 'pendingRequests' ? '#e0f7fa' : 'transparent',
+                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
+              }}
+            >
+              <ListItemText primary="Requests" />
+            </ListItem>
+            <Divider />
+            <ListItem
+              button
               onClick={() => setCurrentView('profile')}
               sx={{
                 backgroundColor: currentView === 'profile' ? '#e0f7fa' : 'transparent',
@@ -93,6 +104,7 @@ function AdminConsole() {
         <Box sx={{ flexGrow: 1, padding: 2 }}>
           {currentView === 'createProject' && <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
           {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'pendingRequests' && <PendingRequets email = {projectAdmin.email} />}
           {currentView === 'profile' && <ProfileView />}
         </Box>
       </Box>

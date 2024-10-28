@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
-import MyProjectsView from '../components/MyProjectsView';
+import MyProjectsView from './InvestigatorProjectsView';
 
 function InvestigatorConsole() {
   const [currentView, setCurrentView] = useState('myProjects');
