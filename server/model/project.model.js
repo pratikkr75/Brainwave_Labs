@@ -19,8 +19,8 @@ const projectSchema = z.object({
     message: "Invalid date format"
   }),
   projectDuration: z.number().positive("Project duration must be positive"),
-  projectReports: z.string().optional(),  
-  financialReport: z.string().optional(), 
+  projectReports: z.array(z.string()).optional(),
+  financialReport: z.array(z.string()).optional(),  
   projectTrack: z.string().optional(),     
   projectBankDetails: z.object({
     accountNumber: z.string().min(1, "Account number is required"),
@@ -75,15 +75,14 @@ const mongooseProjectSchema = new mongoose.Schema({
     type: Number,  
     required: true
   },
-  projectReports: 
-    {
-        type: String,
-        required: false
-    },
-  financialReport: {
-    type: String,  
+  projectReports: {
+    type: [String],
     required: false
   },
+  financialReport: {
+    type: [String],
+    required: false
+  },  
   projectTrack: {
     type: String, 
     required: false

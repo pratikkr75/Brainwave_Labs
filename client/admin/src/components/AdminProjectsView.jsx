@@ -64,7 +64,10 @@ function MyProjectsView({ name, email }) {
   const handleUpdateClick = async (projectCode) => {
     navigate(`project/${projectCode}`);
   };
-
+ //Upload File button
+ const handleUploadFile = async (projectCode)=>{
+     navigate(`project/uploads/${projectCode}`);
+ }
   return (
     <Container component="main" maxWidth="md" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ padding: 3 }}>
@@ -92,7 +95,8 @@ function MyProjectsView({ name, email }) {
                     </>
                   }
                 />
-                <Button variant="contained" onClick={() => handleUpdateClick(project.projectCode)}>Update</Button>
+                <Button style={{marginRight:"0.4rem"}} variant="contained" onClick={() => handleUpdateClick(project.projectCode)}>Update</Button>
+                <Button variant="contained" onClick={() => handleUploadFile(project.projectCode)}>Upload File</Button>
               </ListItem>
             ))
           ) : (

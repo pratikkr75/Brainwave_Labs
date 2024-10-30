@@ -9,10 +9,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Construct MongoDB URL based on environment variables
-const DB_PASSWORD = process.env.DB_PASSWORD; 
-const mongoURL  = `mongodb+srv://brainwave76:${DB_PASSWORD}@cluster0.wooai.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const mongoURL = process.env.MONGO_URI;
 let gfs;
+
 mongoose.connection.once('open', () => {
   gfs = Grid(mongoose.connection.db, mongoose.mongo);
   gfs.collection('uploads');
@@ -52,7 +52,9 @@ const storage = new GridFsStorage({
         metadata: {
           originalname: file.originalname,
           projectCode: req.body.projectCode,
-          uploadDate: new Date()
+          uploadDate: new Date(),
+          uploadedBy: req.body.uploadedBy, // New metadata field for uploader's name or ID
+          role: req.body.role // New metadata field for uploader's role
         }
       };
 
@@ -113,17 +115,9 @@ const uploadFile = async (req, res) => {
     // Generate file URL
     const fileUrl = `/files/${req.file.filename}`;
 
-    // Update project with file URL based on the type of report
-    const reportType = req.body.reportType || 'projectReports';
-    if (!project[reportType]) {
-      project[reportType] = [];
-    }
+ 
     
-    if (typeof project[reportType] === 'string') {
-      project[reportType] = [project[reportType]];
-    }
-    
-    project[reportType].push(fileUrl);
+    project.projectReports.push(fileUrl);
     await project.save();
 
     return res.status(200).json({
@@ -135,7 +129,9 @@ const uploadFile = async (req, res) => {
         originalname: req.file.originalname,
         id: req.file.id,
         size: req.file.size,
-        contentType: req.file.contentType
+        contentType: req.file.contentType,
+        uploadedBy: req.body.uploadedBy, // Return uploadedBy info in response
+        role: req.body.role // Return role info in response
       }
     });
 
