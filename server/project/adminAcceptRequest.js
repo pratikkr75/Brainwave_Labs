@@ -12,7 +12,6 @@ adminAcceptRequest.put('/api/admin/acceptRequest', async (req, res) => {
         if (!projectCode || !fieldToUpdate || !newValue || !requestId) {
             return res.status(400).json({ message: "All fields are required" });
         }
-
         // Update the specific field in the Project model
         const project = await ProjectModel.findOneAndUpdate(
             { projectCode: projectCode },                 // Assuming `code` is the unique identifier for projects

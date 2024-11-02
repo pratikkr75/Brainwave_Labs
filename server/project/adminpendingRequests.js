@@ -8,8 +8,8 @@ const adminpendingRequests = express.Router();
 
 adminpendingRequests.get('/api/admin/pendingRequests',async(req,res)=>{
     try{
-    const {adminEmail} = req.params;
-    const requests = await RequestModel.find({adminEmail:adminEmail});
+    const {adminEmail} = req.query;
+    const requests = await RequestModel.find(adminEmail);
     return res.status(200).send(requests);
 }catch(err){
     return res.status(500).json({ message: "An error occurred", error: err.message });

@@ -69,6 +69,7 @@ const uploadFile = async (req, res) => {
     }
 
     const projectCode = req.body.projectCode;
+   
     if (!projectCode) {
       return res.status(400).json({ error: 'Project code is required' });
     }

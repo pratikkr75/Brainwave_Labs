@@ -25,6 +25,8 @@ import { adminAcceptRequest } from './project/adminAcceptRequest.js';
 import { getProjectFiles } from './project/getProjectFiles.js';
 import {uploadProjectReport} from './project/uploadProjectReport.js'
 import { upload, uploadFile, getFile } from "./utils/upload.js";
+import { fileServingRouter } from './project/fileServing.js';
+import {investigatorAllRequest} from './project/investigatorAllRequest.js';
 dotenv.config();
 
 const app = express();
@@ -75,6 +77,9 @@ app.use(uploadProjectReport);
 app.use(getProjectFiles);  // For getting list of files
 app.get('/files/:filename', getFile);  // For serving individual files
 
+//file serving route to view uploaded files
+app.use(fileServingRouter);
+
 //get particular project for investigator
 app.use(projectprofileInvestigator);
 
@@ -83,6 +88,9 @@ app.use(investigatorProjectRequest);
 
 //to get all pending requests for admin
 app.use(adminpendingRequests);
+
+//get all investigator request
+app.use(investigatorAllRequest);
 
 //to reject request made by investigator from admin
 app.use(adminRejectRequest);
