@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  Button
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
@@ -45,9 +46,60 @@ function InvestigatorConsole() {
   }, [navigate]);
 
   const Logout = () => {
-       localStorage.clear();
-       navigate('/api/investigator/login');
+    const navigate = useNavigate();
+  
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/api/investigator/login');
+    };
+  
+    return (
+        <Box
+            textAlign="center"
+            sx={{
+                mt: -4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                bgcolor: '#f5f5f5', // Light background for the entire box
+            }}
+        >
+            <Paper
+                elevation={3}
+                sx={{
+                    padding: 4,
+                    borderRadius: 2,
+                    bgcolor: '#ffffff', // White background for the confirmation card
+                    boxShadow: 3,
+                    textAlign: 'center',
+                    width: '300px', // Fixed width for the card
+                }}
+            >
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
+                    Are you sure you want to log out?
+                </Typography>
+                <Box sx={{ mt: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleLogout}
+                        sx={{
+                            mr: 2,
+                            backgroundColor: '#1976d2', // Primary color
+                            '&:hover': { backgroundColor: '#115293' }, // Hover effect
+                        }}
+                    >
+                        Yes
+                    </Button>
+                   
+                </Box>
+            </Paper>
+        </Box>
+    );
   };
+  
 
   return (
     <Container component="main" maxWidth="lg" sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', padding: 2 }}>

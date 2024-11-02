@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import {
     Container,
@@ -9,14 +9,14 @@ import {
     Button,
     Grid,
     Card,
-    CardContent,
     CircularProgress,
     Snackbar,
     Alert,
     Box,
     IconButton,
 } from "@mui/material";
-import DescriptionIcon from "@mui/icons-material/Description"; // Replaces PDF icon
+import DescriptionIcon from "@mui/icons-material/Description";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 function AdminFileUpload() {
     const [projectAdmin, setProjectAdmin] = useState({ name: "", email: "" });
@@ -114,97 +114,112 @@ function AdminFileUpload() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4 }}>
-            <Typography variant="h4" gutterBottom>
-                Upload a File
-            </Typography>
-            <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    mb: 4,
-                }}
-            >
-                <Button variant="outlined" component="label">
-                    Select File
-                    <input
-                        type="file"
-                        onChange={handleFileChange}
-                        accept=".png,.jpg,.jpeg,.pdf,.doc,.docx"
-                        hidden
+        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+            <Box sx={{ backgroundColor: "#e1f5fe", borderRadius: 2, p: 3, mb: 4 }}>
+                <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                    Upload a File
+                </Typography>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                        backgroundColor: "white", // White background
+                        p: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                    }}
+                >
+                    <Button variant="outlined" component="label">
+                        Select File
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            accept=".png,.jpg,.jpeg,.pdf,.doc,.docx"
+                            hidden
+                        />
+                    </Button>
+                    {file && (
+                        <Typography variant="body2" color="textSecondary">
+                            Selected File: {file.name}
+                        </Typography>
+                    )}
+                    <TextField
+                        label="File Name"
+                        variant="outlined"
+                        value={reportName}
+                        onChange={(e) => setReportName(e.target.value)}
+                        placeholder="Enter file name here"
                     />
-                </Button>
-                {file && (
-                    <Typography variant="body2" color="textSecondary">
-                        Selected File: {file.name}
-                    </Typography>
-                )}
-                <TextField
-                    label="File Name"
-                    variant="outlined"
-                    value={reportName}
-                    onChange={(e) => setReportName(e.target.value)}
-                    placeholder="Enter file name here"
-                />
-                <Button type="submit" variant="contained" color="primary">
-                    Upload
-                </Button>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                            alignSelf: "flex-start",
+                            backgroundColor: "#1976d2",
+                            ":hover": { backgroundColor: "#115293" },
+                        }}
+                    >
+                        Upload
+                    </Button>
+                </Box>
             </Box>
 
-            <Typography variant="h6" gutterBottom>
-                Project Files
-            </Typography>
-            {loading && <CircularProgress />}
-
-            <Grid container spacing={2}>
-                {Array.isArray(projectFiles) &&
-                    projectFiles.map((file, index) => (
-                        <Grid item xs={12} sm={6} md={4} key={index}>
-                            <Card sx={{ height: "100%" }}>
-                                <CardContent
+            <Box sx={{ backgroundColor: "#f3e5f5", borderRadius: 2, p: 3 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+                    Project Files
+                </Typography>
+                {loading && <CircularProgress />}
+                <Grid container spacing={2}>
+                    {Array.isArray(projectFiles) &&
+                        projectFiles.map((file, index) => (
+                            <Grid item xs={12} sm={6} md={4} key={index}>
+                                <Card
                                     sx={{
+                                        height: "100%",
+                                        borderRadius: 2,
+                                        boxShadow: 3,
                                         display: "flex",
                                         flexDirection: "column",
                                         alignItems: "center",
-                                        justifyContent: "center",
-                                        gap: 1,
+                                        p: 2,
+                                        backgroundColor: "white", // White background
                                     }}
                                 >
-                                    <DescriptionIcon
-                                        color="primary"
-                                        sx={{ fontSize: 40 }}
-                                    />
+                                    <DescriptionIcon color="primary" sx={{ fontSize: 40 }} />
                                     <Typography
                                         variant="body2"
                                         noWrap
                                         align="center"
+                                        sx={{ mt: 1, fontWeight: "medium" }}
                                     >
                                         {file.fileName}
                                     </Typography>
                                     <IconButton
                                         variant="contained"
                                         color="primary"
-                                        onClick={() =>
-                                            handleViewFile(file.fileName)
-                                        }
+                                        onClick={() => handleViewFile(file.fileName)}
                                         disabled={loading}
+                                        sx={{
+                                            mt: 1,
+                                            backgroundColor: "#1976d2",
+                                            color: "white",
+                                            ":hover": { backgroundColor: "#115293" },
+                                            fontSize: "20px", // Smaller eye icon
+                                        }}
                                     >
-                                        View
+                                        <VisibilityIcon fontSize="small" />
                                     </IconButton>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-            </Grid>
+                                </Card>
+                            </Grid>
+                        ))}
+                </Grid>
+            </Box>
 
-            <Snackbar
-                open={!!error}
-                autoHideDuration={6000}
-                onClose={() => setError("")}
-            >
+            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
                 <Alert severity="error" onClose={() => setError("")}>
                     {error}
                 </Alert>
