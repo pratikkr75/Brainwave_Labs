@@ -81,31 +81,45 @@ function MyProjectsView({ name, email }) {
       }}
     >
       <CardContent>
-        <Typography variant="h6" component="h2" gutterBottom noWrap>
+        <Typography variant="h6" component="h2" gutterBottom noWrap
+                  fontFamily={"'Lexend Deca', sans-serif"}
+>
           {project.projectTitle}
         </Typography>
         <Stack spacing={isMobile ? 0.5 : 1}>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"fontSize={"0.9rem"}
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               <strong>Code:</strong>
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.primary" fontSize={"1rem"}
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               {project.projectCode}
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"fontSize={"0.9rem"}
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               <strong>Duration:</strong>
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.primary" fontSize={"1rem"}
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               {project.projectDuration} months
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" 
+            color="text.secondary" fontSize={"0.9rem"} fontFamily={"'Lexend Deca', sans-serif"}
+            >
               <strong>Budget:</strong>
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.primary" fontSize={"1rem"}
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               Rs {project.projectBudget.toLocaleString()}
             </Typography>
           </Box>
@@ -116,10 +130,14 @@ function MyProjectsView({ name, email }) {
           direction={isMobile ? "column" : "row"}
           spacing={1}
           width={isMobile ? "100%" : "auto"}
+          fontFamily={"'Lexend Deca', sans-serif"}
+
         >
           <Button
             variant="contained"
             size="small"
+            fontFamily={"'Lexend Deca', sans-serif"}
+
             onClick={() => handleUpdateClick(project.projectCode)}
             fullWidth={isMobile}
           >
@@ -130,6 +148,8 @@ function MyProjectsView({ name, email }) {
             size="small"
             onClick={() => handleUploadFile(project.projectCode)}
             fullWidth={isMobile}
+            fontFamily={"'Lexend Deca', sans-serif"}
+
           >
             Upload File
           </Button>
@@ -142,6 +162,8 @@ function MyProjectsView({ name, email }) {
     <Container maxWidth="lg" sx={{ py: { xs: 2, sm: 4 } }}>
       <Paper
         elevation={3}
+        fontFamily={"'Lexend Deca', sans-serif"}
+
         sx={{
           p: { xs: 2, sm: 3 },
           borderRadius: 2
@@ -151,6 +173,7 @@ function MyProjectsView({ name, email }) {
           variant={isMobile ? "h5" : "h4"}
           gutterBottom
           sx={{ mb: { xs: 2, sm: 3 } }}
+          fontFamily={"'Lexend Deca', sans-serif"}
         >
           My Projects
         </Typography>
@@ -160,6 +183,7 @@ function MyProjectsView({ name, email }) {
           margin="normal"
           label="Search by Project Code"
           variant="outlined"
+          fontFamily={"'Lexend Deca', sans-serif"}
           value={searchText}
           onChange={handleSearchChange}
           InputProps={{
@@ -174,7 +198,9 @@ function MyProjectsView({ name, email }) {
 
         {currentProjects.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary"
+                      fontFamily={"'Lexend Deca', sans-serif"}
+>
               No projects found
             </Typography>
           </Box>
@@ -195,7 +221,9 @@ function MyProjectsView({ name, email }) {
             display: 'flex',
             justifyContent: 'center',
             flexWrap: 'wrap',
-            gap: 1
+            gap: 1,
+            fontFamily:"'Lexend Deca', sans-serif"
+
           }}
         >
           {Array.from({ length: Math.ceil(filteredProjects.length / projectsPerPage) }, (_, i) => (
@@ -204,6 +232,8 @@ function MyProjectsView({ name, email }) {
               variant={currentPage === i + 1 ? "contained" : "outlined"}
               onClick={() => paginate(i + 1)}
               size={isMobile ? "small" : "medium"}
+              fontFamily={"'Lexend Deca', sans-serif"}
+
               sx={{
                 minWidth: { xs: '36px', sm: '40px' },
                 height: { xs: '36px', sm: '40px' },

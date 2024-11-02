@@ -97,19 +97,21 @@ function PendingRequests({ adminEmail }) {
 
     // Filter buttons for mobile and desktop
     const FilterButtons = () => (
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 4 }}  fontFamily={"'Lexend Deca', sans-serif"}>
             {isMobile ? (
-                <Stack spacing={1} width="100%">
+                <Stack spacing={1} width="100%"  fontFamily={"'Lexend Deca', sans-serif"}>
                     <Button 
                         startIcon={<PendingIcon />}
                         onClick={() => setStatusFilter("Pending")}
                         variant={statusFilter === "Pending" ? "contained" : "outlined"}
                         sx={{ color: '#1a237e' }}
                         fullWidth
+                        fontFamily={"'Lexend Deca', sans-serif"}
                     >
                         Pending
                     </Button>
                     <Button 
+                     fontFamily={"'Lexend Deca', sans-serif"}
                         startIcon={<CheckCircleIcon />}
                         onClick={() => setStatusFilter("Accepted")}
                         variant={statusFilter === "Accepted" ? "contained" : "outlined"}
@@ -119,6 +121,7 @@ function PendingRequests({ adminEmail }) {
                         Accepted
                     </Button>
                     <Button 
+                     fontFamily={"'Lexend Deca', sans-serif"}
                         startIcon={<CancelIcon />}
                         onClick={() => setStatusFilter("Declined")}
                         variant={statusFilter === "Declined" ? "contained" : "outlined"}
@@ -134,7 +137,9 @@ function PendingRequests({ adminEmail }) {
                         startIcon={<PendingIcon />}
                         onClick={() => setStatusFilter("Pending")}
                         variant={statusFilter === "Pending" ? "contained" : "outlined"}
-                        sx={{ color: statusFilter === "Pending" ? 'white' : '#1a237e' }}
+                        sx={{ color: statusFilter === "Pending" ? 'white' : '#1a237e' ,
+                            fontFamily:"'Lexend Deca', sans-serif"
+                        }}
                     >
                         Pending
                     </Button>
@@ -142,7 +147,9 @@ function PendingRequests({ adminEmail }) {
                         startIcon={<CheckCircleIcon />}
                         onClick={() => setStatusFilter("Accepted")}
                         variant={statusFilter === "Accepted" ? "contained" : "outlined"}
-                        sx={{ color: statusFilter === "Accepted" ? 'white' : '#1a237e' }}
+                        sx={{ color: statusFilter === "Accepted" ? 'white' : '#1a237e' ,
+                            fontFamily:"'Lexend Deca', sans-serif"
+                        }}
                     >
                         Accepted
                     </Button>
@@ -150,7 +157,9 @@ function PendingRequests({ adminEmail }) {
                         startIcon={<CancelIcon />}
                         onClick={() => setStatusFilter("Declined")}
                         variant={statusFilter === "Declined" ? "contained" : "outlined"}
-                        sx={{ color: statusFilter === "Declined" ? 'white' : '#1a237e' }}
+                        sx={{ color: statusFilter === "Declined" ? 'white' : '#1a237e',
+                            fontFamily:"'Lexend Deca', sans-serif"
+                         }}
                     >
                         Declined
                     </Button>
@@ -182,6 +191,7 @@ function PendingRequests({ adminEmail }) {
                     sx={{ 
                         mb: 3,
                         fontWeight: 600,
+                        fontFamily:"'Lexend Deca', sans-serif",
                         color: theme.palette.primary.main 
                     }}
                 >
@@ -193,7 +203,7 @@ function PendingRequests({ adminEmail }) {
                 {filteredRequests.length === 0 ? (
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography color="textSecondary" align="center">
+                            <Typography color="textSecondary" align="center"fontFamily={"'Lexend Deca', sans-serif"}>
                                 No requests found.
                             </Typography>
                         </CardContent>
@@ -216,7 +226,7 @@ function PendingRequests({ adminEmail }) {
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} sm={8}>
                                                 <Box sx={{ mb: 2 }}>
-                                                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                                                    <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                                                         Project Code: {request.projectCode}
                                                     </Typography>
                                                     {getStatusChip(request.status)}
@@ -224,18 +234,18 @@ function PendingRequests({ adminEmail }) {
                                                 
                                                 <Grid container spacing={2} sx={{ mb: 2 }}>
                                                     <Grid item xs={12} md={6}>
-                                                        <Typography variant="subtitle2" color="textSecondary">
+                                                        <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="subtitle2" color="textSecondary">
                                                             Field to Update
                                                         </Typography>
-                                                        <Typography variant="body1">
+                                                        <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="body1">
                                                             {request.fieldToUpdate}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid item xs={12} md={6}>
-                                                        <Typography variant="subtitle2" color="textSecondary">
+                                                        <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="subtitle2" color="textSecondary">
                                                             New Value
                                                         </Typography>
-                                                        <Typography variant="body1">
+                                                        <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="body1">
                                                             {request.newValue}
                                                         </Typography>
                                                     </Grid>
@@ -244,18 +254,18 @@ function PendingRequests({ adminEmail }) {
                                                 <Divider sx={{ my: 2 }} />
 
                                                 <Box sx={{ mb: 2 }}>
-                                                    <Typography variant="subtitle2" color="textSecondary">
+                                                    <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="subtitle2" color="textSecondary">
                                                         Message
                                                     </Typography>
-                                                    <Typography variant="body1">
+                                                    <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="body1">
                                                         {request.message}
                                                     </Typography>
                                                 </Box>
 
-                                                <Typography variant="subtitle2" color="textSecondary">
+                                                <Typography fontFamily={"'Lexend Deca', sans-serif"}variant="subtitle2" color="textSecondary">
                                                     Requested By
                                                 </Typography>
-                                                <Typography variant="body1">
+                                                <Typography fontFamily={"'Lexend Deca', sans-serif"} variant="body1">
                                                     {request.investigatorEmail}
                                                 </Typography>
                                             </Grid>
@@ -271,6 +281,7 @@ function PendingRequests({ adminEmail }) {
                                                         fullWidth
                                                         variant="contained"
                                                         color="success"
+                                                        fontFamily={"'Lexend Deca', sans-serif"}
                                                         startIcon={<ThumbUpIcon />}
                                                         onClick={() => handleAccept(
                                                             request.projectCode,
@@ -286,6 +297,7 @@ function PendingRequests({ adminEmail }) {
                                                         fullWidth
                                                         variant="contained"
                                                         color="error"
+                                                        fontFamily={"'Lexend Deca', sans-serif"}
                                                         startIcon={<ThumbDownIcon />}
                                                         onClick={() => handleReject(request._id)}
                                                     >

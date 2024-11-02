@@ -345,7 +345,7 @@ function ProjectProfile() {
   return (
     <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4, px: { xs: 2, sm: 4 } }}>
     <StyledPaper>
-      <ProjectTitle variant="h4" gutterBottom align="center">
+      <ProjectTitle variant="h4" gutterBottom align="center"  fontFamily={"'Lexend Deca', sans-serif"}>
         {project.projectTitle}
       </ProjectTitle>
 
@@ -354,14 +354,14 @@ function ProjectProfile() {
         <Grid item xs={12} md={6}>
           <DetailCard>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
                 Project Overview
               </Typography>
               <Divider sx={{ mb: 2 }} />
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
                 Code: {project.projectCode}
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
                 Duration: {new Date(project.projectStartDate).toLocaleDateString()} -
                 {isEditingEndDate ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
@@ -389,7 +389,7 @@ function ProjectProfile() {
                   </>
                 )}
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
                 Status:{" "}
                 <Chip
                   label={project.projectCompleted ? "Completed" : "In Progress"}
@@ -407,6 +407,7 @@ function ProjectProfile() {
       <Typography
         variant="h6"
         gutterBottom
+        fontFamily={"'Lexend Deca', sans-serif"}
         sx={{ display: "flex", alignItems: "center" }}
       >
         <AttachMoneyIcon sx={{ mr: 1 }} /> Financial Details
@@ -415,7 +416,7 @@ function ProjectProfile() {
 
       {/* Budget Section */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography variant="body1">Budget: Rs {project.projectBudget}</Typography>
+        <Typography variant="body1"  fontFamily={"'Lexend Deca', sans-serif"}>Budget: Rs {project.projectBudget}</Typography>
         {isEditingBudget ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <TextField
@@ -442,7 +443,7 @@ function ProjectProfile() {
       </Box>
 
       {/* Bank Details Section */}
-      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}  fontFamily={"'Lexend Deca', sans-serif"}>
         <AccountBalanceIcon sx={{ mr: 1 }} />
         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
           {isEditingBank ? (
@@ -484,11 +485,11 @@ function ProjectProfile() {
             </>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              <Typography variant="body1">
+              <Typography variant="body1"  fontFamily={"'Lexend Deca', sans-serif"}>
                 Account: {project.projectBankDetails.accountNumber}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body1">
+                <Typography variant="body1"  fontFamily={"'Lexend Deca', sans-serif"}>
                   IFSC: {project.projectBankDetails.IFSC_Code}
                 </Typography>
                 <IconButton onClick={handleEditBankDetails} size="small" sx={{ padding: 0 }}>
@@ -528,13 +529,13 @@ function ProjectProfile() {
     >
       <Stack spacing={3}>
         {/* Project Team Header */}
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2"  fontFamily={"'Lexend Deca', sans-serif"}>
           Project Team
         </Typography>
 
         {/* Admin Section */}
         <Box>
-          <Typography variant="h6" color="primary" gutterBottom>
+          <Typography variant="h6" color="primary" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
             Project Administrator
           </Typography>
           <Paper 
@@ -545,10 +546,10 @@ function ProjectProfile() {
               wordBreak: 'break-word'
             }}
           >
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1"  fontFamily={"'Lexend Deca', sans-serif"}>
               {project.projectAdmin.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"  fontFamily={"'Lexend Deca', sans-serif"}>
               {project.projectAdmin.email}
             </Typography>
           </Paper>
@@ -556,7 +557,7 @@ function ProjectProfile() {
 
         {/* Current Investigators Section */}
         <Box>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
             Current Investigators
           </Typography>
           <List sx={{ p: 0 }}>
@@ -568,6 +569,7 @@ function ProjectProfile() {
                 buttonText="Remove"
                 buttonColor="error"
                 buttonVariant="outlined"
+                fontFamily={"'Lexend Deca', sans-serif"}
                 onButtonClick={() => handleDeleteInvestigator(inv.name, inv.email)}
               />
             ))}
@@ -576,7 +578,7 @@ function ProjectProfile() {
 
         {/* Search Section */}
         <Box>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
             Add New Investigators
           </Typography>
          <Box 
@@ -622,7 +624,7 @@ function ProjectProfile() {
         {/* Search Results */}
         {allInvestigators.length > 0 && (
           <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
               Matching Investigators
             </Typography>
             <List sx={{ p: 0 }}>
@@ -641,7 +643,7 @@ function ProjectProfile() {
 
         {/* Selected Investigators */}
         <Box>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom  fontFamily={"'Lexend Deca', sans-serif"}>
             Selected Investigators
           </Typography>
           {projectInvestigators.length > 0 ? (
@@ -659,7 +661,7 @@ function ProjectProfile() {
               ))}
             </List>
           ) : (
-            <Typography color="text.secondary">
+            <Typography color="text.secondary"  fontFamily={"'Lexend Deca', sans-serif"}>
               No investigators added yet
             </Typography>
           )}
@@ -679,7 +681,7 @@ function ProjectProfile() {
           }}
         >
           {hasUnsavedChanges && (
-            <Typography variant="body2" color="warning.main" sx={{ mr: 2 }}>
+            <Typography variant="body2"  fontFamily={"'Lexend Deca', sans-serif"} color="warning.main" sx={{ mr: 2 }}>
               You have unsaved changes
             </Typography>
           )}
@@ -689,6 +691,7 @@ function ProjectProfile() {
             onClick={handleSaveAllChanges}
             disabled={!hasUnsavedChanges || isSaving}
             sx={{ minWidth: 150 }}
+            fontFamily={"'Lexend Deca', sans-serif"}
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>

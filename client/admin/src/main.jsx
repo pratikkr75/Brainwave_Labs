@@ -10,7 +10,6 @@ import SignupAdmin from './components/SignupAdmin.jsx';
 import AdminConsole from './components/AdminConsole.jsx';
 import ProjectProfile from './components/AdminProjectProfile.jsx';
 import AdminFileUpload from './components/AdminFileUpload.jsx';
-import './index.css'; // Import your CSS file here
 
 const router = createBrowserRouter(
   createRoutesFromElements(

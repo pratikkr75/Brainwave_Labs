@@ -5,76 +5,83 @@ import CreateProject from '../components/CreateProject';
 import MyProjectsView from '../components/AdminProjectsView';
 import PendingRequets from '../components/PendingRequests';
 import {
-  Container,
   Box,
   Paper,
   Typography,
   List,
   ListItem,
   ListItemText,
-  Divider,
   IconButton,
   Drawer,
-  AppBar,
-  Toolbar,
   useTheme,
   useMediaQuery,
-  Button
+  Button,
+  ListItemIcon
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  Menu as MenuIcon,
+  Add as AddIcon,
+  Dashboard as DashboardIcon,
+  AssignmentTurnedIn as RequestIcon,
+  ExitToApp as LogoutIcon,
+  ChevronLeft as ChevronLeftIcon
+} from '@mui/icons-material';
 
 const Logout = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleLogout = () => {
-      localStorage.clear();
-      navigate('/api/admin/login');
+    localStorage.clear();
+    navigate('/api/admin/login');
   };
 
   return (
-      <Box
-          textAlign="center"
-          sx={{
-              mt: -4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100vh',
-              bgcolor: '#f5f5f5', // Light background for the entire box
-          }}
+    <Box
+      sx={{
+        mt: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '80vh',
+        fontFamily:"'Lexend Deca', sans-serif"
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 4,
+          borderRadius: 2,
+          maxWidth: '400px',
+          width: '100%',
+          textAlign: 'center',
+          fontFamily:"'Lexend Deca', sans-serif"
+
+        }}
       >
-          <Paper
-              elevation={3}
-              sx={{
-                  padding: 4,
-                  borderRadius: 2,
-                  bgcolor: '#ffffff', // White background for the confirmation card
-                  boxShadow: 3,
-                  textAlign: 'center',
-                  width: '300px', // Fixed width for the card
-              }}
+        <Typography variant="h6"
+                fontFamily={"'Lexend Deca', sans-serif"}
+                gutterBottom sx={{ fontWeight: 500, color: theme.palette.text.primary }}>
+          Are you sure you want to log out?
+        </Typography>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleLogout}
+            fontFamily={"'Lexend Deca', sans-serif"}
+
+            sx={{
+              bgcolor: theme.palette.primary.main,
+              '&:hover': { bgcolor: theme.palette.primary.dark },
+            }}
           >
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Are you sure you want to log out?
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                  <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleLogout}
-                      sx={{
-                          mr: 2,
-                          backgroundColor: '#1976d2', // Primary color
-                          '&:hover': { backgroundColor: '#115293' }, // Hover effect
-                      }}
-                  >
-                      Yes
-                  </Button>
-                 
-              </Box>
-          </Paper>
-      </Box>
+            Yes
+          </Button>
+         
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 
@@ -116,13 +123,11 @@ const AdminConsole = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  
-
   const menuItems = [
-    { id: 'createProject', label: 'Create Project' },
-    { id: 'myProjects', label: 'My Projects' },
-    { id: 'pendingRequests', label: 'Requests' },
-    { id: 'logout', label: 'Logout' }
+    { id: 'createProject', label: 'Create Project', icon: AddIcon },
+    { id: 'myProjects', label: 'My Projects', icon: DashboardIcon },
+    { id: 'pendingRequests', label: 'Requests', icon: RequestIcon },
+    { id: 'logout', label: 'Logout', icon: LogoutIcon }
   ];
 
   const handleMenuClick = (viewId) => {
@@ -132,116 +137,202 @@ const AdminConsole = () => {
     }
   };
 
-  const NavigationContent = () => (
-    <List>
-      {menuItems.map((item, index) => (
-        <React.Fragment key={item.id}>
+  const SidebarContent = () => (
+    <Box sx={{ 
+      width: '100%', 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column' ,
+      fontFamily:"'Lexend Deca', sans-serif"
+
+    }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 2,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+
+        }}
+      >
+        <Typography variant="h6" fontFamily={"'Lexend Deca', sans-serif"}
+ sx={{ fontWeight: 500 }}>
+          Admin Console
+        </Typography>
+        {isMobile && (
+          <IconButton onClick={handleDrawerToggle}>
+            <ChevronLeftIcon />
+          </IconButton>
+        )}
+      </Box>
+      <List sx={{ 
+        mt: 2, 
+        flex: 1,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: theme.palette.divider,
+          borderRadius: '4px',
+        },
+      }}>
+        {menuItems.map((item) => (
           <ListItem
+            key={item.id}
             button
             onClick={() => handleMenuClick(item.id)}
             sx={{
-              backgroundColor: currentView === item.id ? '#e0f7fa' : 'transparent',
-              '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
+              borderRadius: 1,
+              mb: 1,
+              mx: 1,
+              fontFamily:"'Lexend Deca', sans-serif",
+
+              bgcolor: currentView === item.id ? 'primary.light' : 'transparent',
+              '&:hover': { 
+                bgcolor: 'primary.light',
+                cursor: 'pointer',
+              },
             }}
           >
-            <ListItemText primary={item.label} />
+            <ListItemIcon>
+              <item.icon color={currentView === item.id ? 'primary' : 'inherit'} />
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.label}
+              sx={{
+                '& .MuiTypography-root': {
+                  fontWeight: currentView === item.id ? 600 : 400,
+                  fontFamily:"'Lexend Deca', sans-serif"
+                },
+              }}
+            />
           </ListItem>
-          {index < menuItems.length - 1 && <Divider />}
-        </React.Fragment>
-      ))}
-    </List>
+        ))}
+      </List>
+      <Box sx={{ 
+        p: 2, 
+        borderTop: `1px solid ${theme.palette.divider}`,
+        backgroundColor: theme.palette.background.paper,
+      }}>
+        <Typography variant="body2" color="text.secondary"  fontFamily={"'Lexend Deca', sans-serif"}
+        >
+          Logged in as:
+        </Typography>
+        <Typography  fontFamily={"'Lexend Deca', sans-serif"}
+ variant="body2" fontWeight="500">
+          {projectAdmin.name}
+        </Typography>
+        <Typography variant="body2" 
+          fontFamily={"'Lexend Deca', sans-serif"}
+           color="text.secondary">
+          {projectAdmin.email}
+        </Typography>
+      </Box>
+    </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* App Bar for mobile */}
-      <AppBar
-        position="fixed"
-        sx={{
-          display: { md: 'none' },
-          backgroundColor: 'white',
-          color: 'black',
-          hover:"pointer"
-        }}
-      >
-        <Toolbar>
+      {isMobile && (
+        <Box sx={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          zIndex: theme.zIndex.appBar,
+          bgcolor: 'background.paper',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}>
           <IconButton
             color="inherit"
+            aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2 }}
+            sx={{ 
+              m: 1,
+              '&:hover': { 
+                cursor: 'pointer',
+              },
+            }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Admin Console
-          </Typography>
-        </Toolbar>
-      </AppBar>
+        </Box>
+      )}
 
-      {/* Mobile Drawer */}
-      <Drawer
-        variant="temporary"
-        anchor="left"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true, // Better mobile performance
-        }}
+      {/* Sidebar */}
+      <Box
+        component="nav"
         sx={{
-          display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { width: 250, boxSizing: 'border-box' },
+          width: { md: 280 },
+          flexShrink: { md: 0 },
         }}
       >
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6" sx={{ px: 2, py: 1 }}>
-            Admin Console
-          </Typography>
-          <NavigationContent />
-        </Box>
-      </Drawer>
-
-      {/* Desktop Sidebar */}
-      <Paper
-        elevation={3}
-        sx={{
-          width: 250,
-          display: { xs: 'none', md: 'block' },
-          position: 'fixed',
-          height: '100vh',
-          hover:"pointer"
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h5" gutterBottom>
-            Admin Console
-          </Typography>
-          <NavigationContent />
-        </Box>
-      </Paper>
+        {isMobile ? (
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              '& .MuiDrawer-paper': {
+                width: 280,
+                boxSizing: 'border-box',
+                bgcolor: 'background.paper',
+              },
+            }}
+          >
+            <SidebarContent />
+          </Drawer>
+        ) : (
+          <Paper
+            elevation={3}
+            sx={{
+              width: 280,
+              height: '100vh',
+              overflow: 'hidden',
+              position: 'fixed',
+              borderRadius: 0,
+            }}
+          >
+            <SidebarContent />
+          </Paper>
+        )}
+      </Box>
 
       {/* Main Content */}
-      <Container
+      <Box
         component="main"
-        maxWidth="lg"
+        fontFamily={"'Lexend Deca', sans-serif"}
+
         sx={{
           flexGrow: 1,
-          p: 3,
-          mt: { xs: 8, md: 0 },
-          ml: { md: '250px' },
-          backgroundColor: '#f4f6f8',
+          height: '100vh',
+          overflow: 'auto',
+          width: { md: `calc(100% - 280px)` },
+          fontFamily:"'Lexend Deca', sans-serif",
+
+          mt: isMobile ? '64px' : 0,
+          bgcolor: '#f4f6f8',
         }}
       >
-        <Box sx={{ p: 2 }}>
-          {currentView === 'createProject' && 
-            <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
-          {currentView === 'myProjects' && 
-            <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
-          {currentView === 'pendingRequests' && 
-            <PendingRequets email={projectAdmin.email} />}
-          {currentView === 'logout' && <Logout />}
-        </Box>
-      </Container>
+        {currentView === 'createProject' && 
+          <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
+        {currentView === 'myProjects' && 
+          <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
+        {currentView === 'pendingRequests' && 
+          <PendingRequets email={projectAdmin.email} />}
+        {currentView === 'logout' && <Logout />}
+      </Box>
     </Box>
   );
 };

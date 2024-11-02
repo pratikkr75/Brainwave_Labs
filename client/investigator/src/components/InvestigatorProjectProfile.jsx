@@ -27,23 +27,11 @@ const ProjectProfile = () => {
   const { projectCode } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editMode, setEditMode] = useState({
-    field: null,
-    value: "",
-    open: false,
-  });
-  const [requestMode, setRequestMode] = useState({
-    field: null,
-    open: false,
-    reason: "",
-    newValue: "",
-  });
+  const [editMode, setEditMode] = useState({ field: null, value: "", open: false });
+  const [requestMode, setRequestMode] = useState({ field: null, open: false, reason: "", newValue: "" });
   const navigate = useNavigate();
   const [investigator, setInvestigator] = useState({ name: "", email: "" });
-  const [bankDetails, setBankDetails] = useState({
-    accountNumber: "",
-    IFSC_Code: "",
-  });
+  const [bankDetails, setBankDetails] = useState({ accountNumber: "", IFSC_Code: "" });
 
   useEffect(() => {
     const fetchAndDecodeToken = async () => {
@@ -52,10 +40,7 @@ const ProjectProfile = () => {
         try {
           const decodedToken = jwtDecode(token);
           if (decodedToken.investigatorId) {
-            setInvestigator({
-              name: `${decodedToken.firstname} ${decodedToken.lastname}`,
-              email: decodedToken.email,
-            });
+            setInvestigator({ name: `${decodedToken.firstname} ${decodedToken.lastname}`, email: decodedToken.email });
           } else {
             navigate("/api/investigator/login");
           }
@@ -74,9 +59,7 @@ const ProjectProfile = () => {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/admin/project/${projectCode}`
-        );
+        const res = await axios.get(`http://localhost:8000/api/admin/project/${projectCode}`);
         setProject(res.data);
         setBankDetails(res.data.projectBankDetails);
       } catch (error) {
@@ -91,62 +74,25 @@ const ProjectProfile = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   };
 
   const handleEdit = (field, currentValue) => {
-    if (field === "Bank Account Number") {
-      setEditMode({
-        field: "accountNumber",
-        value: bankDetails.accountNumber || "", // Ensure value is a string
-        open: true,
-      });
-    } else if (field === "IFSC Code") {
-      setEditMode({
-        field: "IFSC_Code",
-        value: bankDetails.IFSC_Code || "", // Ensure value is a string
-        open: true,
-      });
-    } else {
-      setEditMode({
-        field,
-        value: currentValue || "", // Ensure value is a string
-        open: true,
-      });
-    }
+    setEditMode({ field, value: currentValue || "", open: true });
   };
 
   const handleCloseEdit = () => {
-    setEditMode({
-      field: null,
-      value: "",
-      open: false,
-    });
+    setEditMode({ field: null, value: "", open: false });
   };
 
   const handleSaveEdit = async () => {
     try {
-      const updatedBankDetails = {
-        ...bankDetails,
-        [editMode.field]: editMode.value || "", // Ensure it's a string
-      };
-      const updatedProject = {
-        ...project,
-        projectBankDetails: updatedBankDetails,
-      };
+      const updatedBankDetails = { ...bankDetails, [editMode.field]: editMode.value || "" };
+      const updatedProject = { ...project, projectBankDetails: updatedBankDetails };
 
-      const response = await axios.put(
-        `http://localhost:8000/api/admin/project/${projectCode}`,
-        updatedProject
-      );
-
-      console.log("Response Data:", response.data);
+      const response = await axios.put(`http://localhost:8000/api/admin/project/${projectCode}`, updatedProject);
       setProject(response.data);
-      setBankDetails(updatedBankDetails); // Update local bankDetails state
+      setBankDetails(updatedBankDetails);
       handleCloseEdit();
       window.location.reload();
     } catch (error) {
@@ -155,26 +101,12 @@ const ProjectProfile = () => {
     }
   };
 
-  const handleBankDetailChange = (value) => {
-    setEditMode((prev) => ({ ...prev, value }));
-  };
-
   const handleRequest = (field) => {
-    setRequestMode({
-      field,
-      open: true,
-      reason: "",
-      newValue: "",
-    });
+    setRequestMode({ field, open: true, reason: "", newValue: "" });
   };
 
   const handleCloseRequest = () => {
-    setRequestMode({
-      field: null,
-      open: false,
-      reason: "",
-      newValue: "",
-    });
+    setRequestMode({ field: null, open: false, reason: "", newValue: "" });
   };
 
   const handleSubmitRequest = async () => {
@@ -208,13 +140,13 @@ const ProjectProfile = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 4, color: "primary.main" }}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4, px: 2 }}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 4, color: "primary.main", fontFamily: "'Lexend Deca', sans-serif" }}>
           Project Profile
         </Typography>
 
-        <TableContainer>
+        <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 650 }}>
             <TableBody>
               {[
@@ -229,28 +161,34 @@ const ProjectProfile = () => {
                 { label: "IFSC Code", value: bankDetails.IFSC_Code, editable: true },
               ].map((row) => (
                 <TableRow key={row.label}>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", width: "30%" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", width: "30%", fontFamily: "'Lexend Deca', sans-serif" }}>
                     {row.label}
                   </TableCell>
-                  <TableCell sx={{ width: "50%" }}>{row.value}</TableCell>
+                  <TableCell sx={{ width: "50%", fontFamily: "'Lexend Deca', sans-serif" }}>{row.value}</TableCell>
                   {row.editable && !row.requestable && (
                     <TableCell sx={{ width: "10%" }}>
-                      <IconButton
-                        onClick={() => handleEdit(row.label, row.value)}
-                        sx={{ "&:hover": { color: "primary.main" } }}
-                      >
+                      <IconButton onClick={() => handleEdit(row.label, row.value)} sx={{ "&:hover": { color: "primary.main" } }}>
                         <EditIcon />
                       </IconButton>
                     </TableCell>
                   )}
                   {row.requestable && (
-                    <TableCell sx={{ width: "10%" }}>
+                    <TableCell sx={{ width: "20%" }}>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="secondary"
                         onClick={() => handleRequest(row.label)}
+                        sx={{
+                          backgroundColor: "secondary.main",
+                          color: "white",
+                          width:"100%",
+    
+                          "&:hover": {
+                            backgroundColor: "secondary.dark",
+                          },
+                        }}
                       >
-                        Request Change
+                        Request 
                       </Button>
                     </TableCell>
                   )}
@@ -270,7 +208,7 @@ const ProjectProfile = () => {
             margin="dense"
             fullWidth
             value={editMode.value}
-            onChange={(e) => handleBankDetailChange(e.target.value)}
+            onChange={(e) => handleEdit(editMode.field, e.target.value)}
           />
         </DialogContent>
         <DialogActions>
@@ -315,3 +253,4 @@ const ProjectProfile = () => {
 };
 
 export default ProjectProfile;
+
