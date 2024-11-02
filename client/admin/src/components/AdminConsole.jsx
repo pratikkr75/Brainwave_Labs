@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import CreateProject from '../components/CreateProject';
+import MyProjectsView from '../components/AdminProjectsView';
+import PendingRequets from '../components/PendingRequests';
 import {
   Container,
   Box,
@@ -9,16 +13,23 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  IconButton,
+  Drawer,
+  AppBar,
+  Toolbar,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
-import MyProjectsView from '../components/AdminProjectsView';
-import PendingRequets from '../components/PendingRequests';
-function AdminConsole() {
+import MenuIcon from '@mui/icons-material/Menu';
+
+const AdminConsole = () => {
   const [currentView, setCurrentView] = useState('createProject');
   const [projectAdmin, setProjectAdmin] = useState({ name: "", email: "" });
-
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAndDecodeToken = async () => {
       const token = localStorage.getItem('token');
@@ -45,72 +56,141 @@ function AdminConsole() {
     fetchAndDecodeToken();
   }, [navigate]);
 
-  const ProfileView = () => <Paper><h2>Profile</h2></Paper>;
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const Logout = () => {
+    localStorage.clear();
+    navigate('/api/admin/login');
+  };
+
+  const menuItems = [
+    { id: 'createProject', label: 'Create Project' },
+    { id: 'myProjects', label: 'My Projects' },
+    { id: 'pendingRequests', label: 'Requests' },
+    { id: 'logout', label: 'Logout' }
+  ];
+
+  const handleMenuClick = (viewId) => {
+    setCurrentView(viewId);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  const NavigationContent = () => (
+    <List>
+      {menuItems.map((item, index) => (
+        <React.Fragment key={item.id}>
+          <ListItem
+            button
+            onClick={() => handleMenuClick(item.id)}
+            sx={{
+              backgroundColor: currentView === item.id ? '#e0f7fa' : 'transparent',
+              '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
+            }}
+          >
+            <ListItemText primary={item.label} />
+          </ListItem>
+          {index < menuItems.length - 1 && <Divider />}
+        </React.Fragment>
+      ))}
+    </List>
+  );
 
   return (
-    <Container component="main" maxWidth="lg" sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', padding: 2 }}>
-      <Box sx={{ display: 'flex', height: '100%' }}>
-        {/* Sidebar for navigation */}
-        <Paper elevation={3} sx={{ width: '250px', padding: 2, marginRight: 2 }}>
-          <Typography variant="h5" gutterBottom>Admin Console</Typography>
-          <List>
-            <ListItem
-              button
-              onClick={() => setCurrentView('createProject')}
-              sx={{
-                backgroundColor: currentView === 'createProject' ? '#e0f7fa' : 'transparent',
-                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
-              }}
-            >
-              <ListItemText primary="Create Project" />
-            </ListItem>
-            <Divider />
-            <ListItem
-              button
-              onClick={() => setCurrentView('myProjects')}
-              sx={{
-                backgroundColor: currentView === 'myProjects' ? '#e0f7fa' : 'transparent',
-                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
-              }}
-            >
-              <ListItemText primary="My Projects" />
-            </ListItem>
-            <Divider />
-            <ListItem
-              button
-              onClick={() => setCurrentView('pendingRequests')}
-              sx={{
-                backgroundColor: currentView === 'pendingRequests' ? '#e0f7fa' : 'transparent',
-                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
-              }}
-            >
-              <ListItemText primary="Requests" />
-            </ListItem>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* App Bar for mobile */}
+      <AppBar
+        position="fixed"
+        sx={{
+          display: { md: 'none' },
+          backgroundColor: 'white',
+          color: 'black',
+          hover:"pointer"
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Admin Console
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-            <Divider />
-            <ListItem
-              button
-              onClick={() => setCurrentView('profile')}
-              sx={{
-                backgroundColor: currentView === 'profile' ? '#e0f7fa' : 'transparent',
-                '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
-              }}
-            >
-              <ListItemText primary="Profile" />
-            </ListItem>
-          </List>
-        </Paper>
-
-        {/* Main content area */}
-        <Box sx={{ flexGrow: 1, padding: 2 }}>
-          {currentView === 'createProject' && <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
-          {currentView === 'myProjects' && <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
-          {currentView === 'pendingRequests' && <PendingRequets email = {projectAdmin.email} />}
-          {currentView === 'profile' && <ProfileView />}
+      {/* Mobile Drawer */}
+      <Drawer
+        variant="temporary"
+        anchor="left"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better mobile performance
+        }}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': { width: 250, boxSizing: 'border-box' },
+        }}
+      >
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ px: 2, py: 1 }}>
+            Admin Console
+          </Typography>
+          <NavigationContent />
         </Box>
-      </Box>
-    </Container>
+      </Drawer>
+
+      {/* Desktop Sidebar */}
+      <Paper
+        elevation={3}
+        sx={{
+          width: 250,
+          display: { xs: 'none', md: 'block' },
+          position: 'fixed',
+          height: '100vh',
+          hover:"pointer"
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h5" gutterBottom>
+            Admin Console
+          </Typography>
+          <NavigationContent />
+        </Box>
+      </Paper>
+
+      {/* Main Content */}
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: { xs: 8, md: 0 },
+          ml: { md: '250px' },
+          backgroundColor: '#f4f6f8',
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          {currentView === 'createProject' && 
+            <CreateProject email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'myProjects' && 
+            <MyProjectsView email={projectAdmin.email} name={projectAdmin.name} />}
+          {currentView === 'pendingRequests' && 
+            <PendingRequets email={projectAdmin.email} />}
+          {currentView === 'logout' && <Logout />}
+        </Box>
+      </Container>
+    </Box>
   );
-}
+};
 
 export default AdminConsole;

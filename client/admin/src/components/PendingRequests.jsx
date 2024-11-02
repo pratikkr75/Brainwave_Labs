@@ -1,12 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Container,
+  Paper,
+  Typography,
+  ButtonGroup,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Box,
+  Chip,
+  useTheme,
+  useMediaQuery,
+  Stack,
+  Divider
+} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PendingIcon from '@mui/icons-material/Pending';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 function PendingRequests({ adminEmail }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const [requests, setRequests] = useState([]);
-    const [filteredRequests, setFilteredRequests] = useState([]); // State to hold filtered requests
-    const [statusFilter, setStatusFilter] = useState("Pending"); // State to track the current filter
+    const [filteredRequests, setFilteredRequests] = useState([]);
+    const [statusFilter, setStatusFilter] = useState("Pending");
 
-    // Fetch pending requests for the specified admin email
     useEffect(() => {
         async function displayRequests() {
             try {
@@ -14,29 +37,27 @@ function PendingRequests({ adminEmail }) {
                     params: { adminEmail: adminEmail }
                 });
                 setRequests(res.data);
-                setFilteredRequests(res.data.filter(request => request.status === statusFilter)); // Initial filter
-                console.log(res.data);
+               
+                setFilteredRequests(res.data.filter(request => request.status === statusFilter));
+                console.log(requests);
             } catch (err) {
                 console.error("Error fetching requests:", err);
             }
         }
 
         displayRequests();
-    }, [adminEmail]); // Add adminEmail to the dependency array
+    }, [adminEmail]);
 
-    // Update filtered requests when status filter changes
     useEffect(() => {
         setFilteredRequests(requests.filter(request => request.status === statusFilter));
     }, [statusFilter, requests]);
 
-    // Function to handle accepting a request
     const handleAccept = async (projectCode, fieldToUpdate, newValue, requestId) => {
         try {
             await axios.put(`http://localhost:8000/api/admin/acceptRequest`, {
                 projectCode, fieldToUpdate, newValue, requestId
             });
             alert("Change Updated");
-            // Refresh the list after action
             setRequests(prevRequests => prevRequests.map(request => 
                 request._id === requestId ? { ...request, status: "Accepted" } : request
             ));
@@ -45,50 +66,242 @@ function PendingRequests({ adminEmail }) {
         }
     };
 
-    // Function to handle rejecting a request
     const handleReject = async (requestId) => {
         try {
             await axios.post('http://localhost:8000/api/admin/rejectRequest', {
                 requestId
             });
-            // Refresh the list after action
             setRequests(prevRequests => prevRequests.filter(request => request._id !== requestId));
         } catch (err) {
             console.error("Error rejecting request:", err);
         }
     };
 
-    return (
-        <div>
-            <h2>Requests</h2>
-            <div>
-                <button onClick={() => setStatusFilter("Pending")}>Pending</button>
-                <button onClick={() => setStatusFilter("Accepted")}>Accepted</button>
-                <button onClick={() => setStatusFilter("Declined")}>Declined</button>
-            </div>
-            {filteredRequests.length === 0 ? (
-                <p>No requests found.</p>
+    const getStatusChip = (status) => {
+        const statusProps = {
+            Pending: { icon: <PendingIcon />, color: 'warning' },
+            Accepted: { icon: <CheckCircleIcon />, color: 'success' },
+            Declined: { icon: <CancelIcon />, color: 'error' }
+        };
+        
+        return (
+            <Chip 
+                icon={statusProps[status].icon}
+                label={status}
+                color={statusProps[status].color}
+                size="small"
+                sx={{ fontWeight: 500 }}
+            />
+        );
+    };
+
+    // Filter buttons for mobile and desktop
+    const FilterButtons = () => (
+        <Box sx={{ mb: 4 }}>
+            {isMobile ? (
+                <Stack spacing={1} width="100%">
+                    <Button 
+                        startIcon={<PendingIcon />}
+                        onClick={() => setStatusFilter("Pending")}
+                        variant={statusFilter === "Pending" ? "contained" : "outlined"}
+                        sx={{ color: '#1a237e' }}
+                        fullWidth
+                    >
+                        Pending
+                    </Button>
+                    <Button 
+                        startIcon={<CheckCircleIcon />}
+                        onClick={() => setStatusFilter("Accepted")}
+                        variant={statusFilter === "Accepted" ? "contained" : "outlined"}
+                        sx={{ color: '#1a237e' }}
+                        fullWidth
+                    >
+                        Accepted
+                    </Button>
+                    <Button 
+                        startIcon={<CancelIcon />}
+                        onClick={() => setStatusFilter("Declined")}
+                        variant={statusFilter === "Declined" ? "contained" : "outlined"}
+                        sx={{ color: '#1a237e' }}
+                        fullWidth
+                    >
+                        Declined
+                    </Button>
+                </Stack>
             ) : (
-                filteredRequests.map(request => (
-                    <div key={request._id} className="request-item">
-                        <p><strong>Project Code:</strong> {request.projectCode}</p>
-                        <p><strong>Field to Update:</strong> {request.fieldToUpdate}</p>
-                        <p><strong>New Value:</strong> {request.newValue}</p>
-                        <p><strong>Message:</strong> {request.message}</p>
-                        <p><strong>Requested By:</strong> {request.investigatorEmail}</p>
-                        <p><strong>Status:</strong> {request.status}</p>
-                        {request.status === "Pending" && (
-                            <>
-                                <button onClick={() => handleAccept(request.projectCode, request.fieldToUpdate, request.newValue, request._id)}>
-                                    Accept
-                                </button>
-                                <button onClick={() => handleReject(request._id)}>Reject</button>
-                            </>
-                        )}
-                    </div>
-                ))
+                <ButtonGroup variant="outlined">
+                    <Button 
+                        startIcon={<PendingIcon />}
+                        onClick={() => setStatusFilter("Pending")}
+                        variant={statusFilter === "Pending" ? "contained" : "outlined"}
+                        sx={{ color: statusFilter === "Pending" ? 'white' : '#1a237e' }}
+                    >
+                        Pending
+                    </Button>
+                    <Button 
+                        startIcon={<CheckCircleIcon />}
+                        onClick={() => setStatusFilter("Accepted")}
+                        variant={statusFilter === "Accepted" ? "contained" : "outlined"}
+                        sx={{ color: statusFilter === "Accepted" ? 'white' : '#1a237e' }}
+                    >
+                        Accepted
+                    </Button>
+                    <Button 
+                        startIcon={<CancelIcon />}
+                        onClick={() => setStatusFilter("Declined")}
+                        variant={statusFilter === "Declined" ? "contained" : "outlined"}
+                        sx={{ color: statusFilter === "Declined" ? 'white' : '#1a237e' }}
+                    >
+                        Declined
+                    </Button>
+                </ButtonGroup>
             )}
-        </div>
+        </Box>
+    );
+
+    return (
+        <Container 
+            maxWidth="xl" 
+            sx={{ 
+                py: { xs: 2, sm: 3 },
+                px: { xs: 1, sm: 2 },
+                width: '100%',
+                maxWidth: '100% !important'
+            }}
+        >
+            <Paper 
+                elevation={3}
+                sx={{ 
+                    p: { xs: 2, sm: 3 },
+                    borderRadius: 2
+                }}
+            >
+                <Typography 
+                    variant="h5" 
+                    gutterBottom 
+                    sx={{ 
+                        mb: 3,
+                        fontWeight: 600,
+                        color: theme.palette.primary.main 
+                    }}
+                >
+                    Requests
+                </Typography>
+
+                <FilterButtons />
+
+                {filteredRequests.length === 0 ? (
+                    <Card variant="outlined">
+                        <CardContent>
+                            <Typography color="textSecondary" align="center">
+                                No requests found.
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <Grid container spacing={3}>
+                        {filteredRequests.map(request => (
+                            <Grid item xs={12} key={request._id}>
+                                <Card 
+                                    variant="outlined"
+                                    sx={{
+                                        borderRadius: 2,
+                                        '&:hover': {
+                                            boxShadow: theme.shadows[2],
+                                            transition: 'box-shadow 0.3s ease-in-out'
+                                        }
+                                    }}
+                                >
+                                    <CardContent>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} sm={8}>
+                                                <Box sx={{ mb: 2 }}>
+                                                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                                                        Project Code: {request.projectCode}
+                                                    </Typography>
+                                                    {getStatusChip(request.status)}
+                                                </Box>
+                                                
+                                                <Grid container spacing={2} sx={{ mb: 2 }}>
+                                                    <Grid item xs={12} md={6}>
+                                                        <Typography variant="subtitle2" color="textSecondary">
+                                                            Field to Update
+                                                        </Typography>
+                                                        <Typography variant="body1">
+                                                            {request.fieldToUpdate}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={12} md={6}>
+                                                        <Typography variant="subtitle2" color="textSecondary">
+                                                            New Value
+                                                        </Typography>
+                                                        <Typography variant="body1">
+                                                            {request.newValue}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Divider sx={{ my: 2 }} />
+
+                                                <Box sx={{ mb: 2 }}>
+                                                    <Typography variant="subtitle2" color="textSecondary">
+                                                        Message
+                                                    </Typography>
+                                                    <Typography variant="body1">
+                                                        {request.message}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Typography variant="subtitle2" color="textSecondary">
+                                                    Requested By
+                                                </Typography>
+                                                <Typography variant="body1">
+                                                    {request.investigatorEmail}
+                                                </Typography>
+                                            </Grid>
+                                            {request.status === "Pending" && (
+                                                <Grid item xs={12} sm={4} sx={{ 
+                                                    display: 'flex', 
+                                                    flexDirection: { xs: 'row', sm: 'column' },
+                                                    gap: 1,
+                                                    justifyContent: 'center',
+                                                    alignItems: 'stretch'
+                                                }}>
+                                                    <Button
+                                                        fullWidth
+                                                        variant="contained"
+                                                        color="success"
+                                                        startIcon={<ThumbUpIcon />}
+                                                        onClick={() => handleAccept(
+                                                            request.projectCode,
+                                                            request.fieldToUpdate,
+                                                            request.newValue,
+                                                            request._id
+                                                        )}
+                                                        sx={{ mb: { sm: 1 } }}
+                                                    >
+                                                        Accept
+                                                    </Button>
+                                                    <Button
+                                                        fullWidth
+                                                        variant="contained"
+                                                        color="error"
+                                                        startIcon={<ThumbDownIcon />}
+                                                        onClick={() => handleReject(request._id)}
+                                                    >
+                                                        Reject
+                                                    </Button>
+                                                </Grid>
+                                            )}
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                )}
+            </Paper>
+        </Container>
     );
 }
 

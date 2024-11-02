@@ -20,6 +20,10 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  InputAdornment,
+  Stack,
+  useTheme,
+  useMediaQuery
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -72,10 +76,9 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 function ProjectProfile() {
   const { projectCode } = useParams();
   const [project, setProject] = useState(null);
-  const [newInvestigator, setNewInvestigator] = useState({
-    name: "",
-    email: "",
-  });
+  const [projectInvestigators, setProjectInvestigators] = useState([]);
+  const [allInvestigators, setAllInvestigators] = useState([]);
+  const [newInvestigator,setnewInvestigators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditingBank, setIsEditingBank] = useState(false);
   const [isEditingEndDate, setIsEditingEndDate] = useState(false);
@@ -95,6 +98,10 @@ function ProjectProfile() {
     message: "",
     severity: "success",
   });
+  const [searchText,setSearchText] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -106,6 +113,7 @@ function ProjectProfile() {
         setBankDetails(res.data.projectBankDetails);
         setEndDate(new Date(res.data.projectEndDate).toISOString().split('T')[0]);
         setBudget(res.data.projectBudget);
+        setProjectInvestigators(res.data.projectInvestigators);
       } catch (error) {
         console.error("Error fetching project details:", error);
         setSnackbar({
@@ -121,13 +129,66 @@ function ProjectProfile() {
     fetchProjectDetails();
   }, [projectCode]);
 
-  // Existing functions remain the same
-  const handleAddInvestigator = async () => {
-    // ... existing code ...
+  const handleSearchInvestigators = async (e) => {
+    e.preventDefault();
+    if (searchText) {
+      try {
+        console.log(searchText);
+        const response = await axios.get('http://localhost:8000/api/findInvestigator/', {
+          params: { searchText: searchText, projectCode:projectCode },
+        });
+        setAllInvestigators(response.data);
+        console.log(allInvestigators);
+      } catch (error) {
+        alert(error.response?.data?.message || 'Error fetching investigators');
+      }
+    } else {
+      alert("Please enter Search Text to search investigators.");
+    }
   };
 
+  const handleAddInvestigator = (investigator) => {
+    if (!projectInvestigators.some(inv => inv.email === investigator.email)) {
+      const newInvestigator = { name: investigator.firstname + " " + investigator.lastname, email: investigator.email };
+      setProjectInvestigators(prev => [...prev, newInvestigator]);
+      setAllInvestigators(prev => prev.filter(inv => inv.email !== investigator.email));
+      setHasUnsavedChanges(true); 
+      setnewInvestigators(prev => [...prev, newInvestigator]);
+
+    }
+  };
+
+  const handleRemoveInvestigator = (investigator) => {
+    const removedInvestigator = projectInvestigators.find(inv => inv.email === investigator.email);
+    setProjectInvestigators(prev => prev.filter(inv => inv.email !== investigator.email));
+    setnewInvestigators(prev => prev.filter(inv => inv.email !== investigator.email));
+
+    if (removedInvestigator) {
+      setAllInvestigators(prev => [...prev, { 
+        firstname: removedInvestigator.name.split(" ")[0], 
+        lastname: removedInvestigator.name.split(" ")[1], 
+        email: removedInvestigator.email 
+      }]);
+    }
+    console.log(projectInvestigators);
+  };
   const handleDeleteInvestigator = async (name, email) => {
-    // ... existing code ...
+    try {
+      const deleteData = {
+        projectCode,
+        name: name,
+        email: email
+      };
+      console.log(deleteData);
+      const res = await axios.post(`http://localhost:8000/api/admin/project/deleteInvestigator`, deleteData);
+      setProject(prev => ({
+        ...prev,
+        projectInvestigators: prev.projectInvestigators.filter(inv => inv.email !== email),
+      }));
+    } catch (error) {
+      alert(error.response.data.message);
+      console.error("Error deleting investigator:", error);
+    }
   };
 
   const handleEditBankDetails = () => {
@@ -179,6 +240,7 @@ function ProjectProfile() {
         projectBankDetails: bankDetails,
         projectEndDate: new Date(endDate).toISOString(),
         projectBudget: Number(budget),
+        projectInvestigators : projectInvestigators
       };
 
       const response = await axios.put(
@@ -188,7 +250,8 @@ function ProjectProfile() {
       
       setProject(response.data);
       window.location.reload(true);
-
+      setAllInvestigators([]);
+      setProjectInvestigators(project.projectInvestigators);
       setHasUnsavedChanges(false);
 
       setSnackbar({
@@ -225,227 +288,387 @@ function ProjectProfile() {
       </Box>
     );
   }
+  const ListItemComponent = ({ 
+    primary, 
+    secondary, 
+    buttonText, 
+    onButtonClick, 
+    buttonColor = "primary",
+    buttonVariant = "contained" 
+  }) => (
+    <ListItem
+      sx={{
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 1,
+        mb: 1,
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        padding: isMobile ? 2 : 2,
+        gap: isMobile ? 2 : 0
+      }}
+    >
+      <ListItemText
+        primary={primary}
+        secondary={secondary}
+        sx={{
+          margin: 0,
+          '& .MuiListItemText-primary': {
+            wordBreak: 'break-word'
+          },
+          '& .MuiListItemText-secondary': {
+            wordBreak: 'break-word'
+          }
+        }}
+      />
+      <Box sx={{ 
+        width: isMobile ? '100%' : 'auto',
+        display: 'flex',
+        justifyContent: isMobile ? 'flex-end' : 'flex-end'
+      }}>
+        <Button
+          variant={buttonVariant}
+          color={buttonColor}
+          onClick={onButtonClick}
+          size="small"
+          startIcon={buttonText === "Remove" ? <DeleteIcon /> : null}
+          sx={{
+            minWidth: isMobile ? '100px' : '100px'
+          }}
+        >
+          {buttonText}
+        </Button>
+      </Box>
+    </ListItem>
+  );
 
   return (
-    <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <StyledPaper>
-        <ProjectTitle variant="h4">{project.projectTitle}</ProjectTitle>
+    <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4, px: { xs: 2, sm: 4 } }}>
+    <StyledPaper>
+      <ProjectTitle variant="h4" gutterBottom align="center">
+        {project.projectTitle}
+      </ProjectTitle>
 
-        <Grid container spacing={3}>
-          {/* Project Overview Card */}
-          <Grid item xs={12} md={6}>
-            <DetailCard>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Project Overview
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-                <Typography variant="body1" gutterBottom>
-                  Code: {project.projectCode}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Duration: {new Date(project.projectStartDate).toLocaleDateString()} -
-                  {isEditingEndDate ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <TextField
-                        type="date"
-                        size="small"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                      />
-                      <Button
-                        startIcon={<SaveIcon />}
-                        onClick={handleSaveEndDate}
-                        variant="contained"
-                        size="small"
-                      >
-                        Save
-                      </Button>
-                    </Box>
-                  ) : (
-                    <>
-                      {" "}{new Date(project.projectEndDate).toLocaleDateString()}
-                      <IconButton onClick={handleEditEndDate} size="small">
-                        <EditIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Status:{" "}
-                  <Chip
-                    label={project.projectCompledted ? "Completed" : "In Progress"}
-                    color={project.projectCompledted ? "success" : "warning"}
-                    size="small"
-                  />
-                </Typography>
-              </CardContent>
-            </DetailCard>
-          </Grid>
-
-          {/* Financial Details Card */}
-          <Grid item xs={12} md={6}>
-            <DetailCard>
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center" }}>
-                  <AttachMoneyIcon sx={{ mr: 1 }} /> Financial Details
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-                <Typography variant="body1" gutterBottom>
-                  Budget: Rs{" "}
-                  {isEditingBudget ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={budget}
-                        onChange={(e) => setBudget(e.target.value)}
-                      />
-                      <Button
-                        startIcon={<SaveIcon />}
-                        onClick={handleSaveBudget}
-                        variant="contained"
-                        size="small"
-                      >
-                        Save
-                      </Button>
-                    </Box>
-                  ) : (
-                    <>
-                      {project.projectBudget}
-                      <IconButton onClick={handleEditBudget} size="small">
-                        <EditIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </Typography>
-                <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                  <AccountBalanceIcon sx={{ mr: 1 }} />
-                  <Box sx={{ flexGrow: 1 }}>
-                    {isEditingBank ? (
-                      <>
-                        <TextField
-                          fullWidth
-                          size="small"
-                          label="Account Number"
-                          value={bankDetails.accountNumber}
-                          onChange={(e) =>
-                            setBankDetails((prev) => ({
-                              ...prev,
-                              accountNumber: e.target.value,
-                            }))
-                          }
-                          sx={{ mb: 1 }}
-                        />
-                        <TextField
-                          fullWidth
-                          size="small"
-                          label="IFSC Code"
-                          value={bankDetails.IFSC_Code}
-                          onChange={(e) =>
-                            setBankDetails((prev) => ({
-                              ...prev,
-                              IFSC_Code: e.target.value,
-                            }))
-                          }
-                        />
-                        <Button
-                          startIcon={<SaveIcon />}
-                          onClick={handleSaveBankDetails}
-                          variant="contained"
-                          size="small"
-                          sx={{ mt: 1 }}
-                        >
-                          Save
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Typography variant="body1">
-                          Account: {project.projectBankDetails.accountNumber}
-                        </Typography>
-                        <Typography variant="body1">
-                          IFSC: {project.projectBankDetails.IFSC_Code}
-                        </Typography>
-                        <IconButton
-                          onClick={handleEditBankDetails}
-                          size="small"
-                          sx={{ mt: 1 }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </>
-                    )}
+      <Grid container spacing={4}>
+        {/* Project Overview Card */}
+        <Grid item xs={12} md={6}>
+          <DetailCard>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Project Overview
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Typography variant="body1" gutterBottom>
+                Code: {project.projectCode}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Duration: {new Date(project.projectStartDate).toLocaleDateString()} -
+                {isEditingEndDate ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                    <TextField
+                      type="date"
+                      size="small"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                    <Button
+                      startIcon={<SaveIcon />}
+                      onClick={handleSaveEndDate}
+                      variant="contained"
+                      size="small"
+                    >
+                      Save
+                    </Button>
                   </Box>
-                </Box>
-              </CardContent>
-            </DetailCard>
-          </Grid>
+                ) : (
+                  <>
+                    {" "}{new Date(project.projectEndDate).toLocaleDateString()}
+                    <IconButton onClick={handleEditEndDate} size="small">
+                      <EditIcon />
+                    </IconButton>
+                  </>
+                )}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Status:{" "}
+                <Chip
+                  label={project.projectCompleted ? "Completed" : "In Progress"}
+                  color={project.projectCompleted ? "success" : "warning"}
+                  size="small"
+                />
+              </Typography>
+            </CardContent>
+          </DetailCard>
         </Grid>
+        {/* Financial Details Card */}
+        <Grid item xs={12} md={6}>
+  <DetailCard>
+    <CardContent>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ display: "flex", alignItems: "center" }}
+      >
+        <AttachMoneyIcon sx={{ mr: 1 }} /> Financial Details
+      </Typography>
+      <Divider sx={{ mb: 2 }} />
+
+      {/* Budget Section */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="body1">Budget: Rs {project.projectBudget}</Typography>
+        {isEditingBudget ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TextField
+              type="number"
+              size="small"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              sx={{ maxWidth: "100px" }}
+            />
+            <Button
+              startIcon={<SaveIcon />}
+              onClick={handleSaveBudget}
+              variant="contained"
+              size="small"
+            >
+              Save
+            </Button>
+          </Box>
+        ) : (
+          <IconButton onClick={handleEditBudget} size="small" sx={{ padding: 0 }}>
+            <EditIcon />
+          </IconButton>
+        )}
+      </Box>
+
+      {/* Bank Details Section */}
+      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+        <AccountBalanceIcon sx={{ mr: 1 }} />
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {isEditingBank ? (
+            <>
+              <TextField
+                fullWidth
+                size="small"
+                label="Account Number"
+                value={bankDetails.accountNumber}
+                onChange={(e) =>
+                  setBankDetails((prev) => ({
+                    ...prev,
+                    accountNumber: e.target.value,
+                  }))
+                }
+                sx={{ mb: 1 }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="IFSC Code"
+                value={bankDetails.IFSC_Code}
+                onChange={(e) =>
+                  setBankDetails((prev) => ({
+                    ...prev,
+                    IFSC_Code: e.target.value,
+                  }))
+                }
+              />
+              <Button
+                startIcon={<SaveIcon />}
+                onClick={handleSaveBankDetails}
+                variant="contained"
+                size="small"
+                sx={{ mt: 1 }}
+              >
+                Save
+              </Button>
+            </>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              <Typography variant="body1">
+                Account: {project.projectBankDetails.accountNumber}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body1">
+                  IFSC: {project.projectBankDetails.IFSC_Code}
+                </Typography>
+                <IconButton onClick={handleEditBankDetails} size="small" sx={{ padding: 0 }}>
+                  <EditIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </CardContent>
+  </DetailCard>
+</Grid>
+
+</Grid>
+      {/* Spacer for future content */}
+      <Box sx={{ mt: 4 }}>
+        {/** Additional content or components would be added here **/}
+      </Box>
+    </StyledPaper>
 
         {/* Rest of the component remains exactly the same */}
-        <SectionTitle variant="h5" sx={{ display: "flex", alignItems: "center" }}>
+        {/* <SectionTitle variant="h5" sx={{ display: "flex", alignItems: "center" }}>
           <TrackChangesIcon sx={{ mr: 1 }} /> Project Track
         </SectionTitle>
         <Typography variant="body1" sx={{ ml: 4 }}>
           {project.projectTrack}
+        </Typography> */}
+
+<Paper 
+      elevation={2} 
+      sx={{ 
+        p: { xs: 2, sm: 3 }, 
+        borderRadius: 2,
+        width: '100%'
+      }}
+    >
+      <Stack spacing={3}>
+        {/* Project Team Header */}
+        <Typography variant="h5" component="h2">
+          Project Team
         </Typography>
 
-        <SectionTitle variant="h5">Project Team</SectionTitle>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" color="primary" gutterBottom>
-            Admin: {project.projectAdmin.name} ({project.projectAdmin.email})
+        {/* Admin Section */}
+        <Box>
+          <Typography variant="h6" color="primary" gutterBottom>
+            Project Administrator
           </Typography>
+          <Paper 
+            variant="outlined" 
+            sx={{ 
+              p: 2, 
+              bgcolor: 'grey.50',
+              wordBreak: 'break-word'
+            }}
+          >
+            <Typography variant="subtitle1">
+              {project.projectAdmin.name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {project.projectAdmin.email}
+            </Typography>
+          </Paper>
         </Box>
 
-        <List>
-          {project.projectInvestigators.map((inv) => (
-            <StyledListItem key={inv._id}>
-              <ListItemText primary={inv.name} secondary={inv.email} />
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => handleDeleteInvestigator(inv.name, inv.email)}
-                size="small"
-              >
-                Remove
-              </Button>
-            </StyledListItem>
-          ))}
-        </List>
-
-        <Box sx={{ mt: 4, p: 3, bgcolor: "background.paper", borderRadius: 2 }}>
+        {/* Current Investigators Section */}
+        <Box>
           <Typography variant="h6" gutterBottom>
-            Add New Investigator
+            Current Investigators
           </Typography>
-          <Box display="flex" gap={2}>
-            <TextField
-              label="Email"
-              variant="outlined"
-              size="small"
-              value={newInvestigator.email}
-              onChange={(e) =>
-                setNewInvestigator({
-                  ...newInvestigator,
-                  email: e.target.value,
-                })
-              }
-              fullWidth
-            />
-            <Button
-              variant="contained"
-              startIcon={<PersonAddIcon />}
-              onClick={handleAddInvestigator}
-            >
-              Add
-            </Button>
-          </Box>
+          <List sx={{ p: 0 }}>
+            {project.projectInvestigators.map((inv) => (
+              <ListItemComponent
+                key={inv._id}
+                primary={inv.name}
+                secondary={inv.email}
+                buttonText="Remove"
+                buttonColor="error"
+                buttonVariant="outlined"
+                onButtonClick={() => handleDeleteInvestigator(inv.name, inv.email)}
+              />
+            ))}
+          </List>
         </Box>
 
+        {/* Search Section */}
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Add New Investigators
+          </Typography>
+         <Box 
+                component="form" 
+                onSubmit={handleSearchInvestigators}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2
+                }}
+              >
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Search Investigator by Email"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder="Enter investigator's email"
+                  sx={{
+                    margin: 0,
+                    '& .MuiInputBase-root': {
+                      borderRadius: 1
+                    }
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={handleSearchInvestigators}
+                  fullWidth={isMobile}
+                  sx={{ 
+                    width: isMobile ? '100%' : 'auto',
+                    alignSelf: isMobile ? 'stretch' : 'flex-end',
+                    px: 3,
+                    py: 1,
+                  }}
+                >
+                  Search
+                </Button>
+              </Box>
+           
+        </Box>
+
+        {/* Search Results */}
+        {allInvestigators.length > 0 && (
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Matching Investigators
+            </Typography>
+            <List sx={{ p: 0 }}>
+              {allInvestigators.map((investigator, index) => (
+                <ListItemComponent
+                  key={index}
+                  primary={`${investigator.firstname} ${investigator.lastname}`}
+                  secondary={investigator.email}
+                  buttonText="Add"
+                  onButtonClick={() => handleAddInvestigator(investigator)}
+                />
+              ))}
+            </List>
+          </Box>
+        )}
+
+        {/* Selected Investigators */}
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Selected Investigators
+          </Typography>
+          {projectInvestigators.length > 0 ? (
+            <List sx={{ p: 0 }}>
+              {projectInvestigators.map((investigator, index) => (
+                <ListItemComponent
+                  key={index}
+                  primary={investigator.name}
+                  secondary={investigator.email}
+                  buttonText="Remove"
+                  buttonColor="error"
+                  buttonVariant="outlined"
+                  onButtonClick={() => handleRemoveInvestigator(investigator)}
+                />
+              ))}
+            </List>
+          ) : (
+            <Typography color="text.secondary">
+              No investigators added yet
+            </Typography>
+          )}
+        </Box>
+      </Stack>
+    </Paper>
         {/* Save Changes Button */}
         <Box
-          sx={{
+          sx={{ 
             mt: 4,
             pt: 3,
             borderTop: "1px solid",
@@ -470,7 +693,6 @@ function ProjectProfile() {
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </Box>
-      </StyledPaper>
 
       {/* Snackbar for notifications */}
       <Snackbar

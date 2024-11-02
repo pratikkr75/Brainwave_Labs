@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import MyProjectsView from './InvestigatorProjectsView';
-
+import InvestigatorRequest from './InvestigatorRequest';
 function InvestigatorConsole() {
   const [currentView, setCurrentView] = useState('myProjects');
   const [projectInvestigator, setProjectInvestigator] = useState({ name: "", email: "" });
@@ -44,8 +44,10 @@ function InvestigatorConsole() {
     fetchAndDecodeToken();
   }, [navigate]);
 
-  const ProfileView = () => <Paper><h2>Profile</h2></Paper>;
-  const RequestView = () => <Paper><h2>Request</h2></Paper>;
+  const Logout = () => {
+       localStorage.clear();
+       navigate('/api/investigator/login');
+  };
 
   return (
     <Container component="main" maxWidth="lg" sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8', padding: 2 }}>
@@ -73,18 +75,18 @@ function InvestigatorConsole() {
                 '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
               }}
             >
-              <ListItemText primary="Request" />
+              <ListItemText primary="Request Status" />
             </ListItem>
             <Divider />
             <ListItem
               button
-              onClick={() => setCurrentView('profile')}
+              onClick={() => setCurrentView('logout')}
               sx={{
-                backgroundColor: currentView === 'profile' ? '#e0f7fa' : 'transparent',
+                backgroundColor: currentView === 'logout' ? '#e0f7fa' : 'transparent',
                 '&:hover': { backgroundColor: '#e0f7fa', cursor: 'pointer' },
               }}
             >
-              <ListItemText primary="Profile" />
+              <ListItemText primary="Logout" />
             </ListItem>
           </List>
         </Paper>
@@ -92,8 +94,8 @@ function InvestigatorConsole() {
         {/* Main content area */}
         <Box sx={{ flexGrow: 1, padding: 2 }}>
           {currentView === 'myProjects' && <MyProjectsView email={projectInvestigator.email} name={projectInvestigator.name} />}
-          {currentView === 'request' && <RequestView />}
-          {currentView === 'profile' && <ProfileView />}
+          {currentView === 'request' && <InvestigatorRequest investigatorEmail={projectInvestigator.email}/>}
+          {currentView === 'logout' && <Logout />}
         </Box>
       </Box>
     </Container>

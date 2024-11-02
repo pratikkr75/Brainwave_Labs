@@ -63,6 +63,9 @@ function MyProjectsView({ name, email }) {
   const handleViewClick = async (projectCode) => {
     navigate(`/api/investigator/console/project/${projectCode}`);
   };
+  const handleUploadFile = async(projectCode)=>{
+    navigate(`/api/investigator/console/project/uploads/${projectCode}`)
+  }
 
   return (
     <Container component="main" maxWidth="md" sx={{ mt: 4 }}>
@@ -91,7 +94,8 @@ function MyProjectsView({ name, email }) {
                     </>
                   }
                 />
-                <Button variant="contained" onClick={() => handleViewClick(project.projectCode)}>Details</Button>
+                 <Button style={{marginRight:"0.4rem"}} variant="contained" onClick={() => handleViewClick(project.projectCode)}>Update</Button>
+                 <Button variant="contained" onClick={() => handleUploadFile(project.projectCode)}>Upload File</Button>
               </ListItem>
             ))
           ) : (

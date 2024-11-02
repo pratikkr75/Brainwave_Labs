@@ -40,6 +40,11 @@ const ProjectProfile = () => {
   });
   const navigate = useNavigate();
   const [investigator, setInvestigator] = useState({ name: "", email: "" });
+  const [bankDetails, setBankDetails] = useState({
+    accountNumber: "",
+    IFSC_Code: "",
+  });
+
   useEffect(() => {
     const fetchAndDecodeToken = async () => {
       const token = localStorage.getItem("token");
@@ -70,9 +75,10 @@ const ProjectProfile = () => {
     const fetchProjectDetails = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/investigator/project/${projectCode}`
+          `http://localhost:8000/api/admin/project/${projectCode}`
         );
         setProject(res.data);
+        setBankDetails(res.data.projectBankDetails);
       } catch (error) {
         console.error("Error fetching project details:", error);
       } finally {
@@ -93,11 +99,25 @@ const ProjectProfile = () => {
   };
 
   const handleEdit = (field, currentValue) => {
-    setEditMode({
-      field,
-      value: currentValue,
-      open: true,
-    });
+    if (field === "Bank Account Number") {
+      setEditMode({
+        field: "accountNumber",
+        value: bankDetails.accountNumber || "", // Ensure value is a string
+        open: true,
+      });
+    } else if (field === "IFSC Code") {
+      setEditMode({
+        field: "IFSC_Code",
+        value: bankDetails.IFSC_Code || "", // Ensure value is a string
+        open: true,
+      });
+    } else {
+      setEditMode({
+        field,
+        value: currentValue || "", // Ensure value is a string
+        open: true,
+      });
+    }
   };
 
   const handleCloseEdit = () => {
@@ -110,16 +130,33 @@ const ProjectProfile = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const updatedData = { [editMode.field]: editMode.value };
-      await axios.put(
-        `http://localhost:8000/api/projects/${projectCode}`,
-        updatedData
+      const updatedBankDetails = {
+        ...bankDetails,
+        [editMode.field]: editMode.value || "", // Ensure it's a string
+      };
+      const updatedProject = {
+        ...project,
+        projectBankDetails: updatedBankDetails,
+      };
+
+      const response = await axios.put(
+        `http://localhost:8000/api/admin/project/${projectCode}`,
+        updatedProject
       );
-      setProject((prev) => ({ ...prev, [editMode.field]: editMode.value }));
+
+      console.log("Response Data:", response.data);
+      setProject(response.data);
+      setBankDetails(updatedBankDetails); // Update local bankDetails state
       handleCloseEdit();
+      window.location.reload();
     } catch (error) {
-      console.error("Error updating field:", error);
+      console.error("Error saving project changes:", error);
+      alert("Failed to save changes. Please try again.");
     }
+  };
+
+  const handleBankDetailChange = (value) => {
+    setEditMode((prev) => ({ ...prev, value }));
   };
 
   const handleRequest = (field) => {
@@ -142,19 +179,17 @@ const ProjectProfile = () => {
 
   const handleSubmitRequest = async () => {
     try {
-      // Send the request reason and new value to the backend or log it
-      let fieldToUpdate = requestMode.field;
-      fieldToUpdate = fieldToUpdate.replace(/\s+/g, '');
+      let fieldToUpdate = requestMode.field.replace(/\s+/g, '');
       fieldToUpdate = "project" + fieldToUpdate;
-      console.log(fieldToUpdate);
-      let RequestData={
+
+      const RequestData = {
         investigatorEmail: investigator.email,
-        projectCode: projectCode,
-        fieldToUpdate:fieldToUpdate,
+        projectCode,
+        fieldToUpdate,
         newValue: requestMode.newValue,
-        message:requestMode.reason
-      }
-      console.log(RequestData);
+        message: requestMode.reason,
+      };
+
       const res = await axios.post('http://localhost:8000/api/investigator/project/request', RequestData);
       alert(res.data.message);
       handleCloseRequest();
@@ -182,7 +217,7 @@ const ProjectProfile = () => {
         <TableContainer>
           <Table sx={{ minWidth: 650 }}>
             <TableBody>
-              {[ 
+              {[
                 { label: "Project Code", value: project.projectCode },
                 { label: "Project Title", value: project.projectTitle },
                 { label: "Project Admin", value: project.projectAdmin.name },
@@ -190,9 +225,8 @@ const ProjectProfile = () => {
                 { label: "End Date", value: formatDate(project.projectEndDate), editable: true, requestable: true },
                 { label: "Duration", value: project.projectDuration },
                 { label: "Budget", value: project.projectBudget, editable: true, requestable: true },
-                { label: "Project Account Number", value: project.projectBankDetails.AccountNumber, editable: true },
-                { label: "IFSC Code", value: project.projectBankDetails.IFSC_Code, editable: true },
-                { label: "Project Track", value: project.projectTrack, editable: true },
+                { label: "Bank Account Number", value: bankDetails.accountNumber, editable: true },
+                { label: "IFSC Code", value: bankDetails.IFSC_Code, editable: true },
               ].map((row) => (
                 <TableRow key={row.label}>
                   <TableCell component="th" scope="row" sx={{ fontWeight: "bold", width: "30%" }}>
@@ -202,12 +236,7 @@ const ProjectProfile = () => {
                   {row.editable && !row.requestable && (
                     <TableCell sx={{ width: "10%" }}>
                       <IconButton
-                        onClick={() =>
-                          handleEdit(
-                            row.label.toLowerCase().replace(" ", ""),
-                            row.value
-                          )
-                        }
+                        onClick={() => handleEdit(row.label, row.value)}
                         sx={{ "&:hover": { color: "primary.main" } }}
                       >
                         <EditIcon />
@@ -241,7 +270,7 @@ const ProjectProfile = () => {
             margin="dense"
             fullWidth
             value={editMode.value}
-            onChange={(e) => setEditMode((prev) => ({ ...prev, value: e.target.value }))}
+            onChange={(e) => handleBankDetailChange(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
