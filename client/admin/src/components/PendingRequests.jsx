@@ -33,7 +33,7 @@ function PendingRequests({ adminEmail }) {
     useEffect(() => {
         async function displayRequests() {
             try {
-                const res = await axios.get('http://localhost:8000/api/admin/pendingRequests', {
+                const res = await axios.get('https://brainwavelabsbackend.onrender.com/api/admin/pendingRequests', {
                     params: { adminEmail: adminEmail }
                 });
                 setRequests(res.data);
@@ -54,7 +54,7 @@ function PendingRequests({ adminEmail }) {
 
     const handleAccept = async (projectCode, fieldToUpdate, newValue, requestId) => {
         try {
-            await axios.put(`http://localhost:8000/api/admin/acceptRequest`, {
+            await axios.put(`https://brainwavelabsbackend.onrender.com/api/admin/acceptRequest`, {
                 projectCode, fieldToUpdate, newValue, requestId
             });
             alert("Change Updated");
@@ -68,7 +68,7 @@ function PendingRequests({ adminEmail }) {
 
     const handleReject = async (requestId) => {
         try {
-            await axios.post('http://localhost:8000/api/admin/rejectRequest', {
+            await axios.post('https://brainwavelabsbackend.onrender.com/api/admin/rejectRequest', {
                 requestId
             });
             setRequests(prevRequests => prevRequests.filter(request => request._id !== requestId));

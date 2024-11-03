@@ -22,7 +22,7 @@ const LoginInvestigator = () => {
             email:email,
             password:password
         };
-        const res = await axios.post('http://localhost:8000/api/investigator/login', formData);
+        const res = await axios.post('https://brainwavelabsbackend.onrender.com/api/investigator/login', formData);
         const token = res.data.token;
         localStorage.setItem('token',token);
         alert(res.data.message);

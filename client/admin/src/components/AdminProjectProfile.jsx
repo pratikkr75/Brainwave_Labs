@@ -107,7 +107,7 @@ function ProjectProfile() {
     const fetchProjectDetails = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/admin/project/${projectCode}`
+          `https://brainwavelabsbackend.onrender.com/api/admin/project/${projectCode}`
         );
         setProject(res.data);
         setBankDetails(res.data.projectBankDetails);
@@ -134,7 +134,7 @@ function ProjectProfile() {
     if (searchText) {
       try {
         console.log(searchText);
-        const response = await axios.get('http://localhost:8000/api/findInvestigator/', {
+        const response = await axios.get('https://brainwavelabsbackend.onrender.com/api/findInvestigator/', {
           params: { searchText: searchText, projectCode:projectCode },
         });
         setAllInvestigators(response.data);
@@ -180,7 +180,7 @@ function ProjectProfile() {
         email: email
       };
       console.log(deleteData);
-      const res = await axios.post(`http://localhost:8000/api/admin/project/deleteInvestigator`, deleteData);
+      const res = await axios.post(`https://brainwavelabsbackend.onrender.com/api/admin/project/deleteInvestigator`, deleteData);
       setProject(prev => ({
         ...prev,
         projectInvestigators: prev.projectInvestigators.filter(inv => inv.email !== email),
@@ -244,7 +244,7 @@ function ProjectProfile() {
       };
 
       const response = await axios.put(
-        `http://localhost:8000/api/admin/project/${projectCode}`,
+        `https://brainwavelabsbackend.onrender.com/api/admin/project/${projectCode}`,
         updatedProject
       );
       

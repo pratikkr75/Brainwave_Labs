@@ -32,7 +32,7 @@ function MyProjectsView({ name, email }) {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/admin/getAllProjectsAdmin', {
+        const res = await axios.get('https://brainwavelabsbackend.onrender.com/api/admin/getAllProjectsAdmin', {
           params: { name, email },
         });
         setProjects(res.data);

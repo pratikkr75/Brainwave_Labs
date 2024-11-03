@@ -32,7 +32,7 @@ const LoginAdmin = () => {
         password: password
       };
 
-      const res = await axios.post('http://localhost:8000/api/admin/login', formData);
+      const res = await axios.post('https://brainwavelabsbackend.onrender.com/api/admin/login', formData);
       const token = res.data.token;
       localStorage.setItem('token', token);
       alert(res.data.message);

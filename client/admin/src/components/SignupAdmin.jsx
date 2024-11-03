@@ -43,7 +43,7 @@ const SignupAdmin = () => {
         email: email,
         password: password
       };
-      const res = await axios.post('http://localhost:8000/api/admin/signup', formData);
+      const res = await axios.post('https://brainwavelabsbackend.onrender.com/api/admin/signup', formData);
       alert(res.data.message);
     } catch (error) {
       if (error.response?.data?.errors) {

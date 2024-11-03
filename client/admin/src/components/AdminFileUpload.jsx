@@ -58,7 +58,7 @@ function AdminFileUpload() {
     const fetchProjectFiles = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8000/api/admin/${projectCode}/projectFiles`
+                `https://brainwavelabsbackend.onrender.com/api/admin/${projectCode}/projectFiles`
             );
             setProjectFiles(response.data.files);
         } catch (error) {
@@ -75,7 +75,7 @@ function AdminFileUpload() {
             formData.append("uploadedBy", projectAdmin.email);
 
             await axios.post(
-                `http://localhost:8000/api/admin/project/upload`,
+                `https://brainwavelabsbackend.onrender.com/api/admin/project/upload`,
                 formData,
                 {
                     headers: {
@@ -99,7 +99,7 @@ function AdminFileUpload() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:8000/api/admin/files/${fileName}`,
+                `https://brainwavelabsbackend.onrender.com/api/admin/files/${fileName}`,
                 { responseType: "blob" }
             );
             const blob = new Blob([response.data], { type: "application/pdf" });

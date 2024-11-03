@@ -58,7 +58,7 @@ function InvestigatorUploadFile() {
   const fetchProjectFiles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/admin/${projectCode}/projectFiles`
+        `https://brainwavelabsbackend.onrender.com/api/admin/${projectCode}/projectFiles`
       );
       setProjectFiles(response.data.files);
     } catch (error) {
@@ -78,7 +78,7 @@ function InvestigatorUploadFile() {
         }
 
       await axios.post(
-        `http://localhost:8000/api/admin/project/upload`,
+        `https://brainwavelabsbackend.onrender.com/api/admin/project/upload`,
         formData,
         {
           headers: {
@@ -103,7 +103,7 @@ function InvestigatorUploadFile() {
       setLoading(true);
       // Make a GET request to fetch the file
       const response = await axios.get(
-        `http://localhost:8000/api/admin/files/${fileName}`,
+        `https://brainwavelabsbackend.onrender.com/api/admin/files/${fileName}`,
         {
           responseType: 'blob' // Important: tells axios to expect binary data
         }

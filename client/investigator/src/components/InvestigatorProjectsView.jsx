@@ -12,7 +12,7 @@ const MyProjectsView = ({ name, email }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/investigator/getAllProjects?' + new URLSearchParams({
+        const res = await fetch('https://brainwavelabsbackend.onrender.com/api/investigator/getAllProjects?' + new URLSearchParams({
           name: name,
           email: email
         }));

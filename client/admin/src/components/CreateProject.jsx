@@ -42,7 +42,7 @@ function CreateProject({name, email}) {
     e.preventDefault();
     if (searchText) {
       try {
-        const response = await axios.get('http://localhost:8000/api/findInvestigator/', {
+        const response = await axios.get('https://brainwavelabsbackend.onrender.com/api/findInvestigator/', {
           params: { searchText: searchText , projectCode:projectCode},
         });
         setAllInvestigators(response.data);
@@ -92,7 +92,7 @@ function CreateProject({name, email}) {
     projectAdmin.email = email;
     setProjectAdmin(projectAdmin);
     try {
-      const res = await axios.post('http://localhost:8000/api/admin/createproject', projectData);
+      const res = await axios.post('https://brainwavelabsbackend.onrender.com/api/admin/createproject', projectData);
       alert(res.data.message);
     } catch (error) {
       if (error.response?.data?.errors) {

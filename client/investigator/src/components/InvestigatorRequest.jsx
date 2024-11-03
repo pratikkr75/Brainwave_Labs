@@ -33,7 +33,7 @@ function InvestigatorRequest( investigatorEmail ) {
     useEffect(() => {
         async function displayRequests() {
             try {
-                const res = await axios.get('http://localhost:8000/api/investigator/pendingRequests', {
+                const res = await axios.get('https://brainwavelabsbackend.onrender.com/api/investigator/pendingRequests', {
                     params: { investigatorEmail:investigatorEmail }
                 });
                 setRequests(res.data);

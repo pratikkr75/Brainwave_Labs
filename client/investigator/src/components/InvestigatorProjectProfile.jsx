@@ -59,7 +59,7 @@ const ProjectProfile = () => {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/admin/project/${projectCode}`);
+        const res = await axios.get(`https://brainwavelabsbackend.onrender.com/api/admin/project/${projectCode}`);
         setProject(res.data);
         setBankDetails(res.data.projectBankDetails);
       } catch (error) {
@@ -90,7 +90,7 @@ const ProjectProfile = () => {
       const updatedBankDetails = { ...bankDetails, [editMode.field]: editMode.value || "" };
       const updatedProject = { ...project, projectBankDetails: updatedBankDetails };
 
-      const response = await axios.put(`http://localhost:8000/api/admin/project/${projectCode}`, updatedProject);
+      const response = await axios.put(`https://brainwavelabsbackend.onrender.com/api/admin/project/${projectCode}`, updatedProject);
       setProject(response.data);
       setBankDetails(updatedBankDetails);
       handleCloseEdit();
@@ -122,7 +122,7 @@ const ProjectProfile = () => {
         message: requestMode.reason,
       };
 
-      const res = await axios.post('http://localhost:8000/api/investigator/project/request', RequestData);
+      const res = await axios.post('https://brainwavelabsbackend.onrender.com/api/investigator/project/request', RequestData);
       alert(res.data.message);
       handleCloseRequest();
     } catch (error) {

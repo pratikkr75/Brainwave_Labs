@@ -40,7 +40,7 @@ function InvestigatorTasks() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/admin/getTasks/${projectCode}`);
+      const response = await axios.get(`https://brainwavelabsbackend.onrender.com/api/admin/getTasks/${projectCode}`);
       setTasks(response.data);
     } catch (err) {
       console.error("Error fetching tasks:", err);
@@ -53,7 +53,7 @@ function InvestigatorTasks() {
       const taskDeadline = new Date(task.deadline);
       if (task.status === 'Pending' && currentDate > taskDeadline) {
         try {
-          await axios.put(`http://localhost:8000/api/admin/updateTaskStatus/${task._id}`, {
+          await axios.put(`https://brainwavelabsbackend.onrender.com/api/admin/updateTaskStatus/${task._id}`, {
             status: 'Missed',
           });
           setTasks(prevTasks =>
@@ -78,7 +78,7 @@ function InvestigatorTasks() {
 
   const markTaskAsCompleted = async (taskId) => {
     try {
-      await axios.put(`http://localhost:8000/api/admin/updateTaskStatus/${taskId}`, {
+      await axios.put(`https://brainwavelabsbackend.onrender.com/api/admin/updateTaskStatus/${taskId}`, {
         status: 'Completed',
       });
       setTasks(prevTasks =>
@@ -93,7 +93,7 @@ function InvestigatorTasks() {
 
   const handleDeadlineRequest = async (taskId) => {
     try {
-      await axios.put(`http://localhost:8000/api/investigator/requestTaskDeadline/${taskId}`, {
+      await axios.put(`https://brainwavelabsbackend.onrender.com/api/investigator/requestTaskDeadline/${taskId}`, {
         requestedDeadline: newDeadline,
         requestStatus: 'Yes',
       });
