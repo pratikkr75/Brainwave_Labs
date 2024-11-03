@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import CreateProject from '../components/CreateProject';
-import MyProjectsView from '../components/AdminProjectsView';
-import PendingRequets from '../components/PendingRequests';
+import CreateProject from './CreateProject';
+import MyProjectsView from './AdminProjectsView';
+import PendingRequets from './PendingRequests';
 import {
   Box,
   Paper,
