@@ -10,6 +10,7 @@ import SignupAdmin from './components/SignupAdmin.jsx';
 import AdminConsole from './components/AdminConsole.jsx';
 import ProjectProfile from './components/AdminProjectProfile.jsx';
 import AdminFileUpload from './components/AdminFileUpload.jsx';
+import AdminAssignTask from './components/AdminAssignTask.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
     <Route path = "api/admin/console" element = {<AdminConsole/>}/>
     <Route path = "api/admin/console/project/:projectCode" element={<ProjectProfile/>}/>
     <Route path ="api/admin/console/project/uploads/:projectCode" element={<AdminFileUpload/>}/>
+    <Route path = "api/admin/console/project/assign/tasks/:projectCode" element={<AdminAssignTask/>}/>
     </Route>
   )
 );

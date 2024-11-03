@@ -1,33 +1,16 @@
 import React from 'react';
-import { Box, Card, CardContent, Typography, Button, Stack, Chip, Divider } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, Stack, Chip } from '@mui/material';
 
 const LoginLandingPage = () => {
   return (
     <Box sx={{ 
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '100vw',
-      height: '100vh',
-      overflow: 'hidden'
+      width: '100%',
+      height: '100%',
+      mb: 4 // Added margin bottom
     }}>
       <Stack 
         direction={{ xs: 'column', md: 'row' }} 
         spacing={0}
-        // divider={
-        //   <Divider 
-        //     orientation={{ xs: 'horizontal', md: 'vertical' }}
-        //     flexItem 
-        //     sx={{ 
-        //       borderColor: '#E0E0E0',
-        //       borderWidth: 2,
-        //       my: { xs: 0, md: 4 },
-        //       mx: { xs: 4, md: 0 }
-        //     }} 
-        //   />
-        // }
         sx={{ 
           width: '100%',
           height: '100%',
@@ -56,21 +39,21 @@ const LoginLandingPage = () => {
             }}>
               <Chip 
                 label="BUSINESS" 
-                color="success"
+                color="primary" // Changed from success to primary (blue)
                 sx={{ mb: 2 }}
               />
               
               <Typography variant="h4" gutterBottom>
-                For <Box component="span" sx={{ color: 'success.main' }}>Admin</Box>
+                For <Box component="span" sx={{ color: 'primary.main' }}>Admin</Box>
               </Typography>
               
               <Typography color="text.secondary" sx={{ mb: 4 }}>
-                Join Now and Create your TEAM. Start working towards Research & Innovation.
+                Join Now and Create your TEAM.<br></br> Start working towards Research & Innovation.
               </Typography>
               
               <Button 
                 variant="contained" 
-                color="success"
+                color="primary" // Changed from success to primary
                 fullWidth
                 sx={{ mb: 2, py: 1.5 }}
                 component="a"
@@ -122,11 +105,11 @@ const LoginLandingPage = () => {
             }}>
               <Chip 
                 label="BUSINESS" 
-                color="success"
+                color="primary" // Changed from success to primary
                 sx={{ mb: 2 }}
               />
               <Typography variant="h4" gutterBottom>
-                For <Box component="span" sx={{ color: 'success.main' }}>Investigators</Box>
+                For <Box component="span" sx={{ color: 'primary.main' }}>Investigators</Box>
               </Typography>
               
               <Typography color="text.secondary" sx={{ mb: 4 }}>
@@ -135,6 +118,7 @@ const LoginLandingPage = () => {
               
               <Button 
                 variant="outlined" 
+                color="primary" // Added color="primary"
                 fullWidth
                 sx={{ mb: 2, py: 1.5 }}
                 component="a"

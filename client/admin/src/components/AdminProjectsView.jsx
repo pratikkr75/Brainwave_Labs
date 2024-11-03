@@ -67,6 +67,10 @@ function MyProjectsView({ name, email }) {
   const handleUploadFile = (projectCode) => {
     navigate(`project/uploads/${projectCode}`);
   };
+  
+  const handleAssignTask = (projectCode)=>{
+    navigate(`project/assign/tasks/${projectCode}`);
+  };
 
   const ProjectCard = ({ project }) => (
     <Card
@@ -136,7 +140,10 @@ function MyProjectsView({ name, email }) {
           <Button
             variant="contained"
             size="small"
-            fontFamily={"'Lexend Deca', sans-serif"}
+            sx={{ 
+              fontFamily: "'Lexend Deca', sans-serif",
+              textTransform: 'none' 
+            }}
 
             onClick={() => handleUpdateClick(project.projectCode)}
             fullWidth={isMobile}
@@ -148,10 +155,26 @@ function MyProjectsView({ name, email }) {
             size="small"
             onClick={() => handleUploadFile(project.projectCode)}
             fullWidth={isMobile}
-            fontFamily={"'Lexend Deca', sans-serif"}
+            sx={{ 
+              fontFamily: "'Lexend Deca', sans-serif",
+              textTransform: 'none' 
+            }}
 
           >
             Upload File
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => handleAssignTask(project.projectCode)}
+            fullWidth={isMobile}
+            sx={{ 
+              fontFamily: "'Lexend Deca', sans-serif",
+              textTransform: 'none' 
+            }}
+
+          >
+            Tasks
           </Button>
         </Stack>
       </CardActions>

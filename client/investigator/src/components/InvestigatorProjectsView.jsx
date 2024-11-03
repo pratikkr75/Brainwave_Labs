@@ -45,6 +45,10 @@ const MyProjectsView = ({ name, email }) => {
     navigate(`/api/investigator/console/project/uploads/${projectCode}`);
   };
 
+  const handleTask = (projectCode)=>{
+    navigate(`/api/investigator/console/project/tasks/${projectCode}`);
+  }
+
   // Pagination calculations
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
@@ -212,6 +216,12 @@ const MyProjectsView = ({ name, email }) => {
                   style={styles.button}
                 >
                   UPLOAD FILE
+                </button>
+                <button 
+                  onClick={() => handleTask(project.projectCode)} 
+                  style={styles.button}
+                >
+                  TASKS
                 </button>
               </div>
             </div>

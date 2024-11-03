@@ -10,6 +10,7 @@ import SignupInvestigator from './components/SignupInvestigator.jsx';
 import InvestigatorConsole from './components/InvestigatorConsole.jsx';
 import ProjectProfile from './components/InvestigatorProjectProfile.jsx';
 import InvestigatorUploadFile from './components/InvestigatorUploadFile.jsx';
+import InvestigatorTasks from './components/InvestigatorTasks.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App/>}>
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
     <Route path = "api/investigator/console" element = {<InvestigatorConsole/>}/>
     <Route path = "api/investigator/console/project/:projectCode" element={<ProjectProfile/>}/>
     <Route path = "api/investigator/console/project/uploads/:projectCode" element={<InvestigatorUploadFile/>}/>
+    <Route path ="api/investigator/console/project/tasks/:projectCode" element={<InvestigatorTasks/>}/>
     </Route>
   )
 );

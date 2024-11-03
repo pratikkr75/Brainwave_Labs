@@ -11,11 +11,8 @@ function App() {
 
   return (
     <>
-      {/* <Navbar/> */}
       <Outlet/>
-      {/* <SignupInvestigator /> */}
-      {/* <LoginInvestigator /> */}
-      {/* <Footer/> */}
+
     </>
   )
 }

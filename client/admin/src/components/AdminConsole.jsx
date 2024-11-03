@@ -318,7 +318,6 @@ const AdminConsole = () => {
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',
-          width: { md: `calc(100% - 280px)` },
           fontFamily:"'Lexend Deca', sans-serif",
 
           mt: isMobile ? '64px' : 0,

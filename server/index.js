@@ -27,6 +27,12 @@ import {uploadProjectReport} from './project/uploadProjectReport.js'
 import { upload, uploadFile, getFile } from "./utils/upload.js";
 import { fileServingRouter } from './project/fileServing.js';
 import {investigatorAllRequest} from './project/investigatorAllRequest.js';
+import { adminpostTask } from './project/adminpostTask.js';
+import {admingetTasks} from './project/admingetTasks.js';
+import { adminUpdateTaskStatus } from './project/adminUpdateTaskStatus.js';
+import {investigatorRequestDeadline} from './project/investigatorRequestDeadline.js';
+import { adminUpdateTaskDeadline } from './project/adminUpdateTaskDeadline.js';
+import { adminRejectTaskDeadline } from './project/adminRejectTaskDeadline.js';
 dotenv.config();
 
 const app = express();
@@ -97,6 +103,22 @@ app.use(adminRejectRequest);
 
 //to accept request made by investigator from admin
 app.use(adminAcceptRequest);
+
+//assign new task by admin
+app.use(adminpostTask);
+
+//get all tasks for admin
+app.use(admingetTasks);
+
+//update the status to Missed
+app.use(adminUpdateTaskStatus);
+
+//request for deadline extension for tasks by investigator
+app.use(investigatorRequestDeadline);
+
+//accept and reject task deadline by admin
+app.use(adminUpdateTaskDeadline);
+app.use(adminRejectTaskDeadline);
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
